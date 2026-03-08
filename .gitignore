@@ -1,0 +1,48 @@
+# 环境变量文件（包含敏感信息）
+.env
+backend/.env
+frontend/.env
+
+# 依赖目录
+node_modules/
+vendor/
+
+# 构建输出
+frontend/dist/
+frontend/build/
+
+# 日志文件
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# IDE 配置
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 临时文件
+*.tmp
+*.temp
+
+# Composer
+composer.phar
+composer.lock
+
+# NPM
+package-lock.json
+
+# 测试覆盖率
+coverage/
+.nyc_output/
+
+# 缓存
+.cache/
+.parcel-cache/
