@@ -145,11 +145,13 @@ class ImageController
 
                 // 记录成功的生成（仅对已登录用户）
                 if (!$isGuest) {
+                    // 确保 image_url 是字符串
+                    $imageUrl = is_array($result['image_url']) ? json_encode($result['image_url']) : $result['image_url'];
                     $this->quotaService->recordImageGeneration(
                         $id,
                         $model,
                         $prompt,
-                        $result['image_url'],
+                        $imageUrl,
                         $aspectRatio,
                         $imageSize,
                         'success'

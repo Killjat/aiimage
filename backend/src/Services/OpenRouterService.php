@@ -153,6 +153,9 @@ class OpenRouterService
         ?string $imageSize = null
     ): array {
         try {
+            // 记录使用的模型
+            error_log("图片生成请求 - 模型: {$model}, 提示词: " . substr($prompt, 0, 50));
+            
             // 使用聊天接口，但专门用于图片生成
             // 关键：需要设置 modalities 参数
             $ch = curl_init($this->apiUrl . '/chat/completions');
@@ -239,7 +242,22 @@ class OpenRouterService
             // 检查是否有 images 字段（OpenRouter 返回格式）
             if (isset($data['choices'][0]['message']['images']) && !empty($data['choices'][0]['message']['images'])) {
                 // 图片以 base64 data URL 格式返回
-                $imageDataUrl = $data['choices'][0]['message']['images'][0];
+                $imageData = $data['choices'][0]['message']['images'][0];
+                
+                // 处理不同的返回格式
+                if (is_array($imageData)) {
+                    // 如果是对象格式: {"type": "image_url", "image_url": {"url": "data:..."}}
+                    if (isset($imageData['image_url']['url'])) {
+                        $imageDataUrl = $imageData['image_url']['url'];
+                    } elseif (isset($imageData['url'])) {
+                        $imageDataUrl = $imageData['url'];
+                    } else {
+                        $imageDataUrl = json_encode($imageData);
+                    }
+                } else {
+                    // 如果是字符串格式
+                    $imageDataUrl = $imageData;
+                }
                 
                 return [
                     'image_url' => $imageDataUrl,  // base64 data URL
@@ -261,7 +279,8 @@ class OpenRouterService
             }
             
             // 如果都没有，返回错误
-            throw new \Exception('该模型可能不支持图片生成。请尝试使用 Gemini 或 Flux 模型。响应: ' . substr($content, 0, 200));
+            error_log("模型 {$model} 返回了文本而非图片: " . substr($content, 0, 200));
+            throw new \Exception("模型 {$model} 不支持图片生成，返回了文本内容。请尝试使用其他模型（推荐：Nano Banana 2 或 Flux 2 Pro）");
             
         } catch (\Exception $e) {
             error_log('图片生成错误: ' . $e->getMessage());

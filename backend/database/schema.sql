@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS image_generations (
     user_id INT UNSIGNED NOT NULL,
     model VARCHAR(100) NOT NULL,
     prompt TEXT NOT NULL,
-    image_url TEXT,
+    image_url LONGTEXT COMMENT 'Base64编码的图片数据或URL',
     size VARCHAR(20),
     quality VARCHAR(20),
     status ENUM('success', 'failed') DEFAULT 'success',
