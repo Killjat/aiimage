@@ -1,0 +1,884 @@
+[
+    {
+        "created": 1772785044,
+        "id": "publishers\/google\/models\/gemini-3-pro-image-preview",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1772781086,
+        "id": "gpt-5.3-chat-latest",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1772611322,
+        "id": "gemini-3.1-flash-lite-preview",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1772611216,
+        "id": "doubao-1-5-pro-32k-character-250715",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1772159078,
+        "id": "gemini-3.1-flash-image-preview",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1771576374,
+        "id": "qwen3.5-plus",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1771576276,
+        "id": "doubao-seed-2-0-code-preview-260215",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1771576242,
+        "id": "doubao-seed-2-0-mini-260215",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1771576221,
+        "id": "doubao-seed-2-0-lite-260215",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1771576130,
+        "id": "doubao-seed-2-0-pro-260215",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1771575455,
+        "id": "gemini-3.1-pro-preview",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1771513390,
+        "id": "claude-sonnet-4-6",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770996001,
+        "id": "MiniMax-M2.5-lightning",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770995964,
+        "id": "MiniMax-M2.5",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770865396,
+        "id": "speech-02-turbo",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770865369,
+        "id": "speech-2.6-turbo",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770865335,
+        "id": "speech-2.8-turbo",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770863767,
+        "id": "zai-org\/glm-5",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770805900,
+        "id": "suno-v5",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770805875,
+        "id": "suno-v4.5+",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770805840,
+        "id": "suno-v4.5",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770805809,
+        "id": "suno-v4",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770792435,
+        "id": "speech-02-hd",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770792305,
+        "id": "speech-2.6-hd",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770792198,
+        "id": "speech-2.8-hd",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770345457,
+        "id": "gpt-5.3-codex",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770343596,
+        "id": "claude-opus-4-6",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770276399,
+        "id": "qwen3-30b-a3b-instruct-2507",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770276312,
+        "id": "qwen3-235b-a22b-instruct-2507",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1770276088,
+        "id": "qwen3-max-2025-09-23",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1769768883,
+        "id": "doubao-seed-1-6-lite-251015",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1769765680,
+        "id": "google\/gemma-3-27b-it",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1769753051,
+        "id": "qwen3-30b-a3b",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1769752505,
+        "id": "gpt-oss-120b",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1769596151,
+        "id": "MiniMax-M2.1-lightning",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1769596119,
+        "id": "MiniMax-M2.1",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1769595217,
+        "id": "MiniMax-M2",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1769568028,
+        "id": "moonshotai\/kimi-k2.5",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1769511398,
+        "id": "deepseek-ai\/DeepSeek-OCR-2",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1769159768,
+        "id": "o3-mini",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1769153207,
+        "id": "gpt-5.1-codex-max",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1769152849,
+        "id": "gpt-5.2-pro",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1768558089,
+        "id": "gpt-5.2-codex",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1767778239,
+        "id": "o3-2025-04-16",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1767164982,
+        "id": "claude-haiku-4-5-20251001",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1767146311,
+        "id": "gpt-4o-240806",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1766479600,
+        "id": "zai-org\/glm-4.7",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1766116141,
+        "id": "qwen3-vl-flash",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1766029567,
+        "id": "gemini-3-flash-preview",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1765789046,
+        "id": "gpt-5.2-chat",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1765767469,
+        "id": "zai-org\/glm-4.6v",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1765533605,
+        "id": "openai\/gpt-5.2",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1765533081,
+        "id": "gpt-5.2",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1765508259,
+        "id": "qwen3-coder-plus",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1765508183,
+        "id": "qwen3-coder-30b-a3b-instruct",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1765508040,
+        "id": "qwen-turbo",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1765507776,
+        "id": "qwen3-max-preview",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1764818137,
+        "id": "deepseek-ai\/DeepSeek-V3.1-0821",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1764641164,
+        "id": "deepseek-ai\/DeepSeek-V3.2-Think",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1764641077,
+        "id": "deepseek-ai\/DeepSeek-V3.2",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1764319652,
+        "id": "Qwen\/Qwen3-30B-A3B-Thinking",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1764298399,
+        "id": "text-embedding-ada-002",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1764229947,
+        "id": "Qwen\/Qwen3-32B-Thinking",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1764146587,
+        "id": "text-embedding-3-large",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1764065523,
+        "id": "claude-opus-4-5-20251101-thinking",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1764065402,
+        "id": "claude-opus-4-5-20251101",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763708600,
+        "id": "grok-4-1-fast-reasoning",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763708580,
+        "id": "grok-4-1-fast-non-reasoning",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763706702,
+        "id": "gemini-3-pro-image-preview",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763697835,
+        "id": "gpt-5.1-chat",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763697740,
+        "id": "gpt-5.1",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763697720,
+        "id": "gpt-5.1-codex-mini",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763697675,
+        "id": "gpt-5.1-codex",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763621544,
+        "id": "openai\/gpt-5.1-chat",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763621528,
+        "id": "openai\/gpt-5.1-codex",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763621503,
+        "id": "openai\/gpt-5.1-codex-mini",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763621487,
+        "id": "openai\/gpt-5.1",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763519493,
+        "id": "gemini-3-pro-preview",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763437103,
+        "id": "Qwen\/Qwen3-vl-Plus",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1763109272,
+        "id": "moonshotai\/Kimi-K2-Thinking",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1762741377,
+        "id": "o4-mini-deep-research",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1762741326,
+        "id": "o4-mini",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1762338879,
+        "id": "grok-4-fast-reasoning",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761890771,
+        "id": "grok-4-fast",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761883355,
+        "id": "claude-opus-4-1-20250805",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761883152,
+        "id": "claude-sonnet-4-5-20250929-thinking",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761883044,
+        "id": "claude-sonnet-4-5-20250929",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761730258,
+        "id": "gpt-5",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761723614,
+        "id": "Qwen\/Qwen3-235B-A22B-Thinking-2507",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761635016,
+        "id": "IndexTeam\/IndexTTS-2",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761537533,
+        "id": "deepseek-ai\/DeepSeek-OCR",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761277280,
+        "id": "Qwen\/Qwen-Plus-Thinking",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761277251,
+        "id": "Qwen\/Qwen-Plus",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761277206,
+        "id": "Qwen\/Qwen3-Max",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761277149,
+        "id": "gpt-4o-mini",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761277101,
+        "id": "o1",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761277078,
+        "id": "gpt-4.1-nano",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761277028,
+        "id": "gpt-5-chat",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761277010,
+        "id": "gpt-5-codex",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761276996,
+        "id": "claude-sonnet-3.7",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761276971,
+        "id": "claude-opus-4.1-thinking",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761276955,
+        "id": "claude-opus-4.0-thinking",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761276902,
+        "id": "claude-sonnet-4.0-thinking",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761276881,
+        "id": "claude-sonnet-3.5",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761126235,
+        "id": "Qwen\/Qwen3-VL-235B-A22B-Instruct",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1761126228,
+        "id": "Qwen\/Qwen3-VL-235B-A22B-Thinking",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1760686065,
+        "id": "deepseek-ai\/DeepSeek-V3.1-Think",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1760495867,
+        "id": "zai-org\/glm-4.6",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1760349460,
+        "id": "claude-sonnet-4.5-thinking",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1760349440,
+        "id": "claude-sonnet-4.5",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1760347084,
+        "id": "kat-coder-256k",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1759144073,
+        "id": "deepseek-ai\/DeepSeek-V3.2-Exp-Think",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1759143663,
+        "id": "deepseek-ai\/DeepSeek-V3.2-Exp",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1758878805,
+        "id": "deepseek-ai\/DeepSeek-V3.1-Terminus",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1758878499,
+        "id": "moonshotai\/Kimi-K2-Instruct-0905",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1757927098,
+        "id": "openai\/gpt-4o",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1757927098,
+        "id": "claude-opus-4-1",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1757927098,
+        "id": "openai\/gpt-5-nano",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1757927098,
+        "id": "ByteDance\/doubao-1-5-pro-32k-250115",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1757927098,
+        "id": "ByteDance\/doubao-1-5-pro-256k-250115",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1755859769,
+        "id": "openai\/gpt-4.1",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1755832636,
+        "id": "deepseek-ai\/DeepSeek-V3.1",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1755163828,
+        "id": "Qwen\/Qwen3-32B",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1754994524,
+        "id": "openai\/gpt-5",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1754994524,
+        "id": "zai-org\/glm-4.5v",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1754994524,
+        "id": "openai\/gpt-5-mini",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1754994524,
+        "id": "ByteDance\/doubao-seed-1.6",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1754387520,
+        "id": "grok-4",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1754387520,
+        "id": "gpt-4.1-mini",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1754387520,
+        "id": "claude-4-opus",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1754387520,
+        "id": "gemini-2.5-pro",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1754387520,
+        "id": "claude-4-sonnet",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1754387520,
+        "id": "gemini-2.5-flash",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1754387520,
+        "id": "ByteDance\/doubao-seed-1.6-thinking",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1754387520,
+        "id": "ByteDance\/doubao-1.5-thinking-vision-pro",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1754387520,
+        "id": "deepseek-ai\/DeepSeek-R1-Distill-Llama-70B",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1753780215,
+        "id": "zai-org\/glm-4.5",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1753780213,
+        "id": "Qwen\/Qwen3-Coder",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1752463691,
+        "id": "moonshotai\/Kimi-K2-Instruct",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1743064020,
+        "id": "deepseek-ai\/DeepSeek-R1-0528",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1743064016,
+        "id": "deepseek-ai\/DeepSeek-V3-0324",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1743064013,
+        "id": "Qwen\/QwQ-32B",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1743064000,
+        "id": "baidu\/ernie-x1-turbo-32k",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1743064000,
+        "id": "baidu\/ernie-4.5-turbo-128k",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1743064000,
+        "id": "baidu\/ernie-4.5-turbo-vl-32k",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 1743064000,
+        "id": "qwen\/qwen2.5-vl-72b-instruct",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    },
+    {
+        "created": 0,
+        "id": "deepseek-ai\/DeepSeek-R1",
+        "object": "model",
+        "owned_by": "UCloud_UModelverse"
+    }
+]

@@ -2,17 +2,23 @@
 
 namespace App\Controllers;
 
+use App\Services\AIServiceManager;
 use App\Services\OpenRouterService;
+use App\Services\DeepSeekService;
+use App\Services\UCloudService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class ChatController
 {
-    private OpenRouterService $openRouterService;
+    private AIServiceManager $aiServiceManager;
 
     public function __construct()
     {
-        $this->openRouterService = new OpenRouterService();
+        $openRouterService = new OpenRouterService();
+        $deepSeekService = new DeepSeekService();
+        $ucloudService = new UCloudService();
+        $this->aiServiceManager = new AIServiceManager($openRouterService, $deepSeekService, $ucloudService);
     }
 
     /**
@@ -21,7 +27,7 @@ class ChatController
      * 
      * Request body:
      * {
-     *   "model": "grok-beta",
+     *   "model": "grok-beta" or "deepseek/deepseek-chat",
      *   "messages": [
      *     {"role": "user", "content": "Hello"}
      *   ]
@@ -43,8 +49,8 @@ class ChatController
                     ->withStatus(400);
             }
 
-            // Call OpenRouter API
-            $result = $this->openRouterService->chat(
+            // Call AI Service (automatically selects OpenRouter or DeepSeek)
+            $result = $this->aiServiceManager->chat(
                 $data['model'],
                 $data['messages']
             );

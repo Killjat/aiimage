@@ -6,9 +6,20 @@ use App\Controllers\ImageController;
 use Slim\Routing\RouteCollectorProxy;
 
 // Models routes
-$app->get('/api/models', function ($request, $response) {
-    $controller = new ModelsController();
-    return $controller->list($request, $response);
+$app->group('/api/models', function (RouteCollectorProxy $group) {
+    $modelsController = new ModelsController();
+    
+    // Get all models (OpenRouter + DeepSeek + UCloud)
+    $group->get('', [$modelsController, 'list']);
+    
+    // Get DeepSeek models only
+    $group->get('/deepseek', [$modelsController, 'listDeepSeek']);
+    
+    // Get OpenRouter models only
+    $group->get('/openrouter', [$modelsController, 'listOpenRouter']);
+    
+    // Get UCloud models only
+    $group->get('/ucloud', [$modelsController, 'listUCloud']);
 });
 
 // Chat routes
@@ -20,8 +31,7 @@ $app->group('/api/chat', function (RouteCollectorProxy $group) {
 
 // Image generation routes
 $app->group('/api/image', function (RouteCollectorProxy $group) {
-    $openRouterService = new \App\Services\OpenRouterService();
-    $imageController = new ImageController($openRouterService);
+    $imageController = new ImageController();
     
     $group->post('/generate', [$imageController, 'generate']);
     $group->get('/models', [$imageController, 'getImageModels']);

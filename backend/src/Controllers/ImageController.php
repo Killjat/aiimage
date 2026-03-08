@@ -4,15 +4,21 @@ namespace App\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Services\AIServiceManager;
 use App\Services\OpenRouterService;
+use App\Services\DeepSeekService;
+use App\Services\UCloudService;
 
 class ImageController
 {
-    private OpenRouterService $openRouterService;
+    private AIServiceManager $aiServiceManager;
 
-    public function __construct(OpenRouterService $openRouterService)
+    public function __construct()
     {
-        $this->openRouterService = $openRouterService;
+        $openRouterService = new OpenRouterService();
+        $deepSeekService = new DeepSeekService();
+        $ucloudService = new UCloudService();
+        $this->aiServiceManager = new AIServiceManager($openRouterService, $deepSeekService, $ucloudService);
     }
 
     /**
@@ -72,8 +78,8 @@ class ImageController
                 return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
             }
 
-            // 调用图片生成服务
-            $result = $this->openRouterService->generateImage(
+            // 调用图片生成服务（仅 OpenRouter 支持）
+            $result = $this->aiServiceManager->generateImage(
                 $model, 
                 $prompt, 
                 $baseImage,
