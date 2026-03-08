@@ -134,6 +134,142 @@ class OpenRouterService
     }
 
     /**
+     * Generate image using OpenRouter API
+     * 使用专门的图片生成模型通过聊天接口生成图片
+     * 
+     * @param string $model Model name (e.g., 'google/gemini-3.1-flash-image-preview')
+     * @param string $prompt Image description
+     * @param string|null $baseImage Base64 encoded image for editing (optional)
+     * @param string|null $aspectRatio Aspect ratio (e.g., '16:9', '1:1')
+     * @param string|null $imageSize Image size (e.g., '1K', '2K', '4K')
+     * @return array API response with image_url
+     * @throws \Exception
+     */
+    public function generateImage(
+        string $model, 
+        string $prompt, 
+        ?string $baseImage = null,
+        ?string $aspectRatio = null,
+        ?string $imageSize = null
+    ): array {
+        try {
+            // 使用聊天接口，但专门用于图片生成
+            // 关键：需要设置 modalities 参数
+            $ch = curl_init($this->apiUrl . '/chat/completions');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer ' . $this->apiKey,
+                'Content-Type: application/json',
+                'Accept: application/json',
+                'HTTP-Referer: ' . $this->getAppUrl(),
+                'X-Title: OpenRouter Chat System - Image Generation',
+            ]);
+            
+            // 判断模型类型，设置正确的 modalities
+            $isGemini = strpos($model, 'google/gemini') !== false;
+            $modalities = $isGemini ? ['image', 'text'] : ['image'];
+            
+            // 构建消息数组
+            $messages = [];
+            
+            // 如果有上传的图片，添加到消息中（用于图片编辑）
+            if ($baseImage) {
+                $messages[] = [
+                    'role' => 'user',
+                    'content' => [
+                        [
+                            'type' => 'image_url',
+                            'image_url' => [
+                                'url' => $baseImage  // base64 data URL
+                            ]
+                        ],
+                        [
+                            'type' => 'text',
+                            'text' => $prompt
+                        ]
+                    ]
+                ];
+            } else {
+                // 纯文本生成
+                $messages[] = [
+                    'role' => 'user',
+                    'content' => $prompt
+                ];
+            }
+            
+            // 构建请求体
+            $requestBody = [
+                'model' => $model,
+                'messages' => $messages,
+                // 关键参数：指定输出模式
+                'modalities' => $modalities
+            ];
+            
+            // 添加图片配置（如果提供）
+            if ($aspectRatio || $imageSize) {
+                $imageConfig = [];
+                if ($aspectRatio) {
+                    $imageConfig['aspect_ratio'] = $aspectRatio;
+                }
+                if ($imageSize) {
+                    $imageConfig['image_size'] = $imageSize;
+                }
+                $requestBody['image_config'] = $imageConfig;
+            }
+            
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($requestBody));
+            
+            $body = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            
+            if ($httpCode !== 200) {
+                error_log('OpenRouter Image Generation HTTP Code: ' . $httpCode);
+                error_log('OpenRouter Image Generation Response: ' . substr($body, 0, 500));
+                throw new \Exception('图片生成请求失败: HTTP ' . $httpCode);
+            }
+            
+            $data = json_decode($body, true);
+            
+            if ($data === null) {
+                error_log('OpenRouter Image Generation 返回内容: ' . substr($body, 0, 500));
+                throw new \Exception('图片生成响应解析失败');
+            }
+            
+            // 检查是否有 images 字段（OpenRouter 返回格式）
+            if (isset($data['choices'][0]['message']['images']) && !empty($data['choices'][0]['message']['images'])) {
+                // 图片以 base64 data URL 格式返回
+                $imageDataUrl = $data['choices'][0]['message']['images'][0];
+                
+                return [
+                    'image_url' => $imageDataUrl,  // base64 data URL
+                    'prompt' => $prompt,
+                    'model' => $model,
+                    'format' => 'base64'
+                ];
+            }
+            
+            // 如果没有 images 字段，检查文本内容中是否有图片 URL
+            $content = $data['choices'][0]['message']['content'] ?? '';
+            if (preg_match('/https?:\/\/[^\s\)]+\.(png|jpg|jpeg|gif|webp)/i', $content, $matches)) {
+                return [
+                    'image_url' => $matches[0],
+                    'prompt' => $prompt,
+                    'model' => $model,
+                    'format' => 'url'
+                ];
+            }
+            
+            // 如果都没有，返回错误
+            throw new \Exception('该模型可能不支持图片生成。请尝试使用 Gemini 或 Flux 模型。响应: ' . substr($content, 0, 200));
+            
+        } catch (\Exception $e) {
+            error_log('图片生成错误: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
      * Validate API key
      * 
      * @return bool
