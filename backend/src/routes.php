@@ -3,7 +3,18 @@
 use App\Controllers\ChatController;
 use App\Controllers\ModelsController;
 use App\Controllers\ImageController;
+use App\Controllers\AuthController;
 use Slim\Routing\RouteCollectorProxy;
+
+// Auth routes (public)
+$app->group('/api/auth', function (RouteCollectorProxy $group) {
+    $authController = new AuthController();
+    
+    $group->post('/register', [$authController, 'register']);
+    $group->post('/login', [$authController, 'login']);
+    $group->post('/logout', [$authController, 'logout']);
+    $group->get('/me', [$authController, 'me']);
+});
 
 // Models routes
 $app->group('/api/models', function (RouteCollectorProxy $group) {
@@ -35,4 +46,6 @@ $app->group('/api/image', function (RouteCollectorProxy $group) {
     
     $group->post('/generate', [$imageController, 'generate']);
     $group->get('/models', [$imageController, 'getImageModels']);
+    $group->get('/quota', [$imageController, 'getQuota']);
+    $group->get('/history', [$imageController, 'getHistory']);
 });
