@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Message, ChatResponse } from '../types';
+import type { Message, ChatResponse, AuthResponse, LoginRequest, RegisterRequest, User } from '../types';
 
 // 从环境变量读取 API URL，生产环境必须配置
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -16,6 +16,36 @@ const apiClient = axios.create({
   },
 });
 
+// 添加请求拦截器，自动添加 token
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('auth_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Auth API
+export const register = async (data: RegisterRequest): Promise<AuthResponse> => {
+  const response = await apiClient.post<AuthResponse>('/auth/register', data);
+  return response.data;
+};
+
+export const login = async (data: LoginRequest): Promise<AuthResponse> => {
+  const response = await apiClient.post<AuthResponse>('/auth/login', data);
+  return response.data;
+};
+
+export const logout = async (): Promise<void> => {
+  await apiClient.post('/auth/logout');
+};
+
+export const getCurrentUser = async (): Promise<User> => {
+  const response = await apiClient.get<{ user: User }>('/auth/me');
+  return response.data.user;
+};
+
+// Chat API
 export const sendMessage = async (
   model: string,
   messages: Message[]

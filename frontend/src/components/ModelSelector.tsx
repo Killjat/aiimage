@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModelType } from '../types';
+import type { ModelType } from '../types';
 
 interface ModelSelectorProps {
   selectedModel: ModelType;

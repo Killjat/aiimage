@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import ImageGeneratorNew from './components/ImageGeneratorNew';
+import './App.mobile.css';
 
 // 从环境变量读取 API URL，生产环境必须配置
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -7,7 +9,13 @@ if (!API_BASE_URL) {
   console.error('错误: VITE_API_BASE_URL 环境变量未配置！请在 .env 文件中设置。');
 }
 
-function App() {
+interface AppProps {
+  isAuthenticated: boolean;
+  onLogout?: () => void;
+  onShowLogin?: () => void;
+}
+
+function App({ isAuthenticated, onLogout, onShowLogin }: AppProps) {
   const [messages, setMessages] = useState(() => {
     const saved = localStorage.getItem('chat_messages');
     return saved ? JSON.parse(saved) : [];
@@ -20,6 +28,7 @@ function App() {
   });
   const [backendOnline, setBackendOnline] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showImageGenerator, setShowImageGenerator] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // 保存消息到 localStorage
@@ -44,14 +53,14 @@ function App() {
       .then(data => {
         setBackendOnline(data.status === 'ok');
         if (data.status === 'ok') {
-          // 获取模型列表
-          return fetch(`${API_BASE_URL}/models`);
+          // 获取模型列表（只获取适合聊天的模型）
+          return fetch(`${API_BASE_URL}/models?chat_only=true`);
         }
       })
       .then(res => res?.json())
       .then(data => {
         if (data?.success && data?.models) {
-          // 显示所有模型，不过滤
+          // 只显示适合聊天的模型
           setModels(data.models);
         }
       })
@@ -96,6 +105,27 @@ function App() {
       localStorage.removeItem('chat_messages');
     }
   };
+
+  const handleLogout = () => {
+    if (confirm('确定要退出登录吗？')) {
+      onLogout?.();
+    }
+  };
+
+  // 获取用户信息
+  const getUserInfo = () => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        return JSON.parse(userStr);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  };
+
+  const user = getUserInfo();
 
   return (
     <div style={{ 
@@ -144,6 +174,79 @@ function App() {
         </div>
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {isAuthenticated ? (
+            <>
+              {user && (
+                <div style={{
+                  padding: '6px 12px',
+                  background: '#f8f9fa',
+                  borderRadius: '16px',
+                  fontSize: '13px',
+                  color: '#5f6368',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}>
+                  <span>👤</span>
+                  <span>{user.username || user.email}</span>
+                </div>
+              )}
+            </>
+          ) : (
+            <button
+              onClick={onShowLogin}
+              style={{
+                padding: '8px 16px',
+                background: '#1a73e8',
+                color: 'white',
+                border: 'none',
+                borderRadius: '20px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 500,
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#1557b0';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#1a73e8';
+              }}
+            >
+              登录 / 注册
+            </button>
+          )}
+          
+          <button
+            onClick={() => setShowImageGenerator(true)}
+            style={{
+              padding: '8px 16px',
+              background: 'transparent',
+              color: '#5f6368',
+              border: '1px solid #dadce0',
+              borderRadius: '20px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 500,
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#f8f9fa';
+              e.currentTarget.style.borderColor = '#1a73e8';
+              e.currentTarget.style.color = '#1a73e8';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.borderColor = '#dadce0';
+              e.currentTarget.style.color = '#5f6368';
+            }}
+          >
+            🎨 生成图片
+          </button>
+          
           <button
             onClick={() => setShowSettings(!showSettings)}
             style={{
@@ -197,6 +300,35 @@ function App() {
               }}
             >
               清除对话
+            </button>
+          )}
+          
+          {isAuthenticated && onLogout && (
+            <button
+              onClick={handleLogout}
+              style={{
+                padding: '8px 16px',
+                background: 'transparent',
+                color: '#5f6368',
+                border: '1px solid #dadce0',
+                borderRadius: '20px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 500,
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#fce8e6';
+                e.currentTarget.style.color = '#ea4335';
+                e.currentTarget.style.borderColor = '#ea4335';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = '#5f6368';
+                e.currentTarget.style.borderColor = '#dadce0';
+              }}
+            >
+              退出登录
             </button>
           )}
         </div>
@@ -523,6 +655,15 @@ function App() {
           50% { opacity: 1; transform: scale(1); }
         }
       `}</style>
+
+      {/* 图片生成器弹窗 */}
+      {showImageGenerator && (
+        <ImageGeneratorNew 
+          onClose={() => setShowImageGenerator(false)}
+          isAuthenticated={isAuthenticated}
+          onShowLogin={onShowLogin}
+        />
+      )}
     </div>
   );
 }

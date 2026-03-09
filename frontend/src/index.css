@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -9,4 +13,25 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* 防止移动端双击缩放 */
+  touch-action: manipulation;
+  /* 优化移动端滚动 */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 移动端优化：防止文本选择时的高亮 */
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 移动端优化：输入框样式 */
+input, textarea, select {
+  font-size: 16px; /* 防止 iOS 自动缩放 */
+}
+
+/* 响应式容器 */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
 }

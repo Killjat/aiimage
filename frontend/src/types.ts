@@ -16,3 +16,25 @@ export interface ChatResponse {
     total_tokens: number;
   };
 }
+
+export interface User {
+  id: number;
+  email: string;
+  username?: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  username?: string;
+}
