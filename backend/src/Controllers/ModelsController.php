@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Services\AIServiceManager;
 use App\Services\OpenRouterService;
 use App\Services\DeepSeekService;
-use App\Services\UCloudService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -17,23 +16,28 @@ class ModelsController
     {
         $openRouterService = new OpenRouterService();
         $deepSeekService = new DeepSeekService();
-        $ucloudService = new UCloudService();
-        $this->aiServiceManager = new AIServiceManager($openRouterService, $deepSeekService, $ucloudService);
+        $this->aiServiceManager = new AIServiceManager($openRouterService, $deepSeekService);
     }
 
     /**
      * Get all available models (OpenRouter + DeepSeek)
      * GET /api/models
+     * GET /api/models?chat_only=true  (只返回适合聊天的模型)
      */
     public function list(Request $request, Response $response): Response
     {
         try {
-            $models = $this->aiServiceManager->getAllModels();
+            // 检查是否只需要聊天模型
+            $queryParams = $request->getQueryParams();
+            $chatOnly = isset($queryParams['chat_only']) && $queryParams['chat_only'] === 'true';
+            
+            $models = $this->aiServiceManager->getAllModels($chatOnly);
             
             $response->getBody()->write(json_encode([
                 'success' => true,
                 'models' => $models,
-                'count' => count($models)
+                'count' => count($models),
+                'chat_only' => $chatOnly
             ]));
 
             return $response->withHeader('Content-Type', 'application/json');
@@ -107,32 +111,5 @@ class ModelsController
         }
     }
     
-    /**
-     * Get UCloud models only
-     * GET /api/models/ucloud
-     */
-    public function listUCloud(Request $request, Response $response): Response
-    {
-        try {
-            $models = $this->aiServiceManager->getUCloudModels();
-            
-            $response->getBody()->write(json_encode([
-                'success' => true,
-                'models' => $models,
-                'count' => count($models),
-                'provider' => 'ucloud'
-            ]));
 
-            return $response->withHeader('Content-Type', 'application/json');
-            
-        } catch (\Exception $e) {
-            $response->getBody()->write(json_encode([
-                'success' => false,
-                'error' => $e->getMessage()
-            ]));
-            return $response
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus(500);
-        }
-    }
 }

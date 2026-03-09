@@ -20,7 +20,7 @@ $app->group('/api/auth', function (RouteCollectorProxy $group) {
 $app->group('/api/models', function (RouteCollectorProxy $group) {
     $modelsController = new ModelsController();
     
-    // Get all models (OpenRouter + DeepSeek + UCloud)
+    // Get all models (OpenRouter + DeepSeek)
     $group->get('', [$modelsController, 'list']);
     
     // Get DeepSeek models only
@@ -28,9 +28,6 @@ $app->group('/api/models', function (RouteCollectorProxy $group) {
     
     // Get OpenRouter models only
     $group->get('/openrouter', [$modelsController, 'listOpenRouter']);
-    
-    // Get UCloud models only
-    $group->get('/ucloud', [$modelsController, 'listUCloud']);
 });
 
 // Chat routes

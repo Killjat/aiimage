@@ -6,34 +6,26 @@ class AIServiceManager
 {
     private OpenRouterService $openRouterService;
     private DeepSeekService $deepSeekService;
-    private UCloudService $ucloudService;
 
     public function __construct(
         OpenRouterService $openRouterService,
-        DeepSeekService $deepSeekService,
-        UCloudService $ucloudService
+        DeepSeekService $deepSeekService
     ) {
         $this->openRouterService = $openRouterService;
         $this->deepSeekService = $deepSeekService;
-        $this->ucloudService = $ucloudService;
     }
 
     /**
      * 根据模型 ID 判断使用哪个服务
      * 
      * @param string $model
-     * @return string 'openrouter', 'deepseek', 或 'ucloud'
+     * @return string 'openrouter' 或 'deepseek'
      */
     private function getServiceProvider(string $model): string
     {
         // DeepSeek 模型以 'deepseek-' 或 'deepseek/' 开头
         if (strpos($model, 'deepseek-') === 0 || strpos($model, 'deepseek/') === 0) {
             return 'deepseek';
-        }
-        
-        // UCloud 模型以 'ucloud/' 开头
-        if (strpos($model, 'ucloud/') === 0) {
-            return 'ucloud';
         }
         
         return 'openrouter';
@@ -57,17 +49,11 @@ class AIServiceManager
             return $this->deepSeekService->chat($cleanModel, $messages);
         }
         
-        if ($provider === 'ucloud') {
-            // 移除 'ucloud/' 前缀
-            $cleanModel = str_replace('ucloud/', '', $model);
-            return $this->ucloudService->chat($cleanModel, $messages);
-        }
-        
         return $this->openRouterService->chat($model, $messages);
     }
 
     /**
-     * 生成图片（OpenRouter 和 UCloud 支持）
+     * 生成图片（仅 OpenRouter 支持）
      * 
      * @param string $model
      * @param string $prompt
@@ -84,15 +70,6 @@ class AIServiceManager
         ?string $aspectRatio = null,
         ?string $imageSize = null
     ): array {
-        $provider = $this->getServiceProvider($model);
-        
-        if ($provider === 'ucloud') {
-            // UCloud 使用不同的参数格式
-            $cleanModel = str_replace('ucloud/', '', $model);
-            $size = $this->convertImageSize($imageSize, $aspectRatio);
-            return $this->ucloudService->generateImage($cleanModel, $prompt, $size);
-        }
-        
         // OpenRouter 图片生成
         return $this->openRouterService->generateImage(
             $model,
@@ -102,36 +79,14 @@ class AIServiceManager
             $imageSize
         );
     }
-    
-    /**
-     * 转换图片尺寸格式
-     * 
-     * @param string|null $imageSize
-     * @param string|null $aspectRatio
-     * @return string
-     */
-    private function convertImageSize(?string $imageSize, ?string $aspectRatio): string
-    {
-        // 默认尺寸
-        $size = '1024x1024';
-        
-        if ($aspectRatio === '16:9') {
-            $size = $imageSize === '4K' ? '1792x1024' : '1024x576';
-        } elseif ($aspectRatio === '9:16') {
-            $size = $imageSize === '4K' ? '1024x1792' : '576x1024';
-        } elseif ($imageSize === '4K') {
-            $size = '1024x1024';  // DALL-E 3 最大支持 1024x1024
-        }
-        
-        return $size;
-    }
 
     /**
      * 获取所有可用模型
      * 
+     * @param bool $chatOnly 是否只返回适合聊天的模型
      * @return array
      */
-    public function getAllModels(): array
+    public function getAllModels(bool $chatOnly = false): array
     {
         $models = [];
         
@@ -157,19 +112,145 @@ class AIServiceManager
             error_log('获取 DeepSeek 模型失败: ' . $e->getMessage());
         }
         
-        try {
-            // 获取 UCloud 模型
-            $ucloudModels = $this->ucloudService->getModels();
-            foreach ($ucloudModels as $model) {
-                // 添加 'ucloud/' 前缀以区分
-                $model['id'] = 'ucloud/' . $model['id'];
-                $models[] = array_merge($model, ['provider' => 'ucloud']);
-            }
-        } catch (\Exception $e) {
-            error_log('获取 UCloud 模型失败: ' . $e->getMessage());
+        // 如果只需要聊天模型，进行筛选
+        if ($chatOnly) {
+            $models = $this->filterChatModels($models);
         }
         
         return $models;
+    }
+    
+    /**
+     * 筛选适合日常对话的模型
+     * 
+     * @param array $models
+     * @return array
+     */
+    private function filterChatModels(array $models): array
+    {
+        // 推荐的聊天模型列表（按优先级排序）
+        $recommendedChatModels = [
+            // 高性价比模型
+            'google/gemini-3.1-flash-lite',
+            'google/gemini-2.5-flash',
+            'google/gemini-3-flash',
+            'anthropic/claude-sonnet-4.6',
+            'anthropic/claude-haiku-4.5',
+            
+            // 旗舰模型
+            'openai/gpt-5.4',
+            'openai/gpt-4o',
+            'openai/gpt-4o-mini',
+            'anthropic/claude-opus-4.6',
+            'google/gemini-3.1-pro',
+            'google/gemini-2.5-pro',
+            
+            // DeepSeek 模型
+            'deepseek/deepseek-chat',
+            
+            // 其他优质模型
+            'x-ai/grok-4.1-fast',
+            'x-ai/grok-beta',
+            'meta-llama/llama-3.3-70b-instruct',
+            'meta-llama/llama-3.1-405b-instruct',
+            'qwen/qwen-3.5-plus',
+            'qwen/qwen-2.5-72b-instruct',
+            'mistral/mistral-large',
+            'mistral/mistral-medium',
+            'cohere/command-r-plus',
+            'perplexity/llama-3.1-sonar-large-128k-online',
+        ];
+        
+        // 需要排除的模型类型（关键词）
+        $excludeKeywords = [
+            'vision',      // 视觉模型
+            'image',       // 图片生成模型
+            'embed',       // 嵌入模型
+            'moderation',  // 审核模型
+            'whisper',     // 语音模型
+            'tts',         // 文本转语音
+            'dall-e',      // 图片生成
+            'flux',        // 图片生成
+            'stable-diffusion', // 图片生成
+            'preview',     // 预览版本（可能不稳定）
+            'beta',        // 测试版本
+            'free',        // 免费模型（质量可能较低）
+            'nano',        // Nano 系列（通常是小模型）
+            'mini',        // Mini 系列（除了 gpt-4o-mini）
+            'turbo',       // Turbo 系列（旧版本）
+            'instruct',    // Instruct 系列（除了特定推荐的）
+            'code',        // 代码专用模型
+            'reasoning',   // 推理专用模型
+        ];
+        
+        $filteredModels = [];
+        
+        foreach ($models as $model) {
+            $modelId = $model['id'] ?? '';
+            $modelName = strtolower($model['name'] ?? '');
+            
+            // 检查是否在推荐列表中
+            $isRecommended = in_array($modelId, $recommendedChatModels);
+            
+            // 如果在推荐列表中，直接保留
+            if ($isRecommended) {
+                $model['recommended'] = true;
+                $model['priority'] = array_search($modelId, $recommendedChatModels);
+                $filteredModels[] = $model;
+                continue;
+            }
+            
+            // 对于非推荐模型，进行严格筛选
+            // 检查是否包含排除关键词
+            $shouldExclude = false;
+            foreach ($excludeKeywords as $keyword) {
+                if (stripos($modelId, $keyword) !== false || stripos($modelName, $keyword) !== false) {
+                    $shouldExclude = true;
+                    break;
+                }
+            }
+            
+            // 如果包含排除关键词，跳过
+            if ($shouldExclude) {
+                continue;
+            }
+            
+            // 额外筛选：只保留主流提供商的模型
+            $allowedProviders = [
+                'openai/',
+                'anthropic/',
+                'google/',
+                'meta-llama/',
+                'mistral/',
+                'x-ai/',
+                'cohere/',
+                'qwen/',
+                'deepseek/',
+                'perplexity/',
+            ];
+            
+            $isAllowedProvider = false;
+            foreach ($allowedProviders as $provider) {
+                if (strpos($modelId, $provider) === 0) {
+                    $isAllowedProvider = true;
+                    break;
+                }
+            }
+            
+            // 只保留主流提供商的模型
+            if ($isAllowedProvider) {
+                $model['recommended'] = false;
+                $model['priority'] = 999;
+                $filteredModels[] = $model;
+            }
+        }
+        
+        // 按优先级排序
+        usort($filteredModels, function($a, $b) {
+            return ($a['priority'] ?? 999) - ($b['priority'] ?? 999);
+        });
+        
+        return $filteredModels;
     }
 
     /**
@@ -209,27 +290,6 @@ class AIServiceManager
             }, $models);
         } catch (\Exception $e) {
             error_log('获取 OpenRouter 模型失败: ' . $e->getMessage());
-            return [];
-        }
-    }
-    
-    /**
-     * 获取 UCloud 模型列表
-     * 
-     * @return array
-     */
-    public function getUCloudModels(): array
-    {
-        try {
-            $models = $this->ucloudService->getModels();
-            // 添加 provider 标记
-            return array_map(function($model) {
-                $model['id'] = 'ucloud/' . $model['id'];
-                $model['provider'] = 'ucloud';
-                return $model;
-            }, $models);
-        } catch (\Exception $e) {
-            error_log('获取 UCloud 模型失败: ' . $e->getMessage());
             return [];
         }
     }

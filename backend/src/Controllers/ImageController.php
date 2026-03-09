@@ -7,7 +7,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Services\AIServiceManager;
 use App\Services\OpenRouterService;
 use App\Services\DeepSeekService;
-use App\Services\UCloudService;
 use App\Services\AuthService;
 use App\Services\QuotaService;
 
@@ -21,8 +20,7 @@ class ImageController
     {
         $openRouterService = new OpenRouterService();
         $deepSeekService = new DeepSeekService();
-        $ucloudService = new UCloudService();
-        $this->aiServiceManager = new AIServiceManager($openRouterService, $deepSeekService, $ucloudService);
+        $this->aiServiceManager = new AIServiceManager($openRouterService, $deepSeekService);
         $this->authService = new AuthService();
         $this->quotaService = new QuotaService();
     }
