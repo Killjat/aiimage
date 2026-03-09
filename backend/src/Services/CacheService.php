@@ -62,7 +62,7 @@ class CacheService
     /**
      * 设置缓存
      */
-    public function set(string $prefix, array $params, array $value, int $ttl = null): bool
+    public function set(string $prefix, array $params, array $value, ?int $ttl = null): bool
     {
         $key = $this->getCacheKey($prefix, $params);
         $filePath = $this->getCacheFilePath($key);
