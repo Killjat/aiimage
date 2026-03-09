@@ -3,6 +3,11 @@
 backend/.env
 frontend/.env
 
+# 部署脚本（包含密码）
+scripts/deploy_remote.sh
+scripts/setup_https.sh
+scripts/setup_https_ip.sh
+
 # 依赖目录
 node_modules/
 vendor/

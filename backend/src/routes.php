@@ -4,6 +4,8 @@ use App\Controllers\ChatController;
 use App\Controllers\ModelsController;
 use App\Controllers\ImageController;
 use App\Controllers\AuthController;
+use App\Controllers\WebAnalysisController;
+use App\Controllers\NotteController;
 use Slim\Routing\RouteCollectorProxy;
 
 // Auth routes (public)
@@ -45,4 +47,28 @@ $app->group('/api/image', function (RouteCollectorProxy $group) {
     $group->get('/models', [$imageController, 'getImageModels']);
     $group->get('/quota', [$imageController, 'getQuota']);
     $group->get('/history', [$imageController, 'getHistory']);
+});
+
+// Website analysis routes
+$app->group('/api/analyze', function (RouteCollectorProxy $group) {
+    $webAnalysisController = new WebAnalysisController();
+    
+    $group->post('/website', [$webAnalysisController, 'analyzeWebsite']);
+    $group->get('/reasoning-models', [$webAnalysisController, 'getReasoningModels']);
+});
+
+// Notte automation routes
+$app->group('/api/notte', function (RouteCollectorProxy $group) {
+    $notteController = new NotteController();
+    
+    // 基础功能
+    $group->post('/scrape', [$notteController, 'scrape']);
+    $group->post('/scrape/structured', [$notteController, 'scrapeStructured']);
+    $group->post('/agent/run', [$notteController, 'runAgent']);
+    
+    // 预定义监控任务
+    $group->get('/monitor/tasks', [$notteController, 'getMonitorTasks']);
+    $group->get('/monitor/anthropic/news', [$notteController, 'monitorAnthropicNews']);
+    $group->get('/monitor/anthropic/pricing', [$notteController, 'monitorAnthropicPricing']);
+    $group->get('/monitor/clawhub/skills', [$notteController, 'monitorClawHubSkills']);
 });

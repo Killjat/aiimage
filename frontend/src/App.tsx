@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import ImageGeneratorNew from './components/ImageGeneratorNew';
+import ClawHubNews from './components/ClawHubNews';
+import SmartAnalysis from './components/SmartAnalysis';
 import './App.mobile.css';
 
 // 从环境变量读取 API URL，生产环境必须配置
@@ -27,8 +29,8 @@ function App({ isAuthenticated, onLogout, onShowLogin }: AppProps) {
     return localStorage.getItem('selected_model') || 'auto';
   });
   const [backendOnline, setBackendOnline] = useState(false);
+  const [currentView, setCurrentView] = useState<'home' | 'chat' | 'image' | 'analysis'>('home');
   const [showSettings, setShowSettings] = useState(false);
-  const [showImageGenerator, setShowImageGenerator] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // 保存消息到 localStorage
@@ -141,17 +143,22 @@ function App({ isAuthenticated, onLogout, onShowLogin }: AppProps) {
         alignItems: 'center', 
         justifyContent: 'space-between',
         padding: '12px 24px',
-        borderBottom: '1px solid #e8eaed'
+        borderBottom: '1px solid #e8eaed',
+        background: 'white'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <h1 style={{ 
-            margin: 0, 
-            fontSize: '20px', 
-            fontWeight: 400,
-            color: '#202124',
-            letterSpacing: '-0.5px'
-          }}>
-            AI Chat
+          <h1 
+            onClick={() => setCurrentView('home')}
+            style={{ 
+              margin: 0, 
+              fontSize: '20px', 
+              fontWeight: 400,
+              color: '#202124',
+              letterSpacing: '-0.5px',
+              cursor: 'pointer'
+            }}
+          >
+            🏠 ClawHub 技能
           </h1>
           <div style={{ 
             display: 'flex',
@@ -174,6 +181,69 @@ function App({ isAuthenticated, onLogout, onShowLogin }: AppProps) {
         </div>
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* 导航按钮 */}
+          <button
+            onClick={() => setCurrentView('chat')}
+            style={{
+              padding: '8px 16px',
+              background: currentView === 'chat' ? '#e8f0fe' : 'transparent',
+              color: currentView === 'chat' ? '#1a73e8' : '#5f6368',
+              border: '1px solid #dadce0',
+              borderRadius: '20px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 500,
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            💬 AI 聊天
+          </button>
+          
+          <button
+            onClick={() => setCurrentView('image')}
+            style={{
+              padding: '8px 16px',
+              background: currentView === 'image' ? '#e8f0fe' : 'transparent',
+              color: currentView === 'image' ? '#1a73e8' : '#5f6368',
+              border: '1px solid #dadce0',
+              borderRadius: '20px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 500,
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            🎨 生成图片
+          </button>
+          
+          <button
+            onClick={() => setCurrentView('analysis')}
+            style={{
+              padding: '8px 16px',
+              background: currentView === 'analysis' ? '#e8f0fe' : 'transparent',
+              color: currentView === 'analysis' ? '#1a73e8' : '#5f6368',
+              border: '1px solid #dadce0',
+              borderRadius: '20px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 500,
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            🔍 智能分析
+          </button>
+          
+          <div style={{ width: '1px', height: '24px', background: '#dadce0', margin: '0 4px' }} />
+          
           {isAuthenticated ? (
             <>
               {user && (
@@ -217,90 +287,47 @@ function App({ isAuthenticated, onLogout, onShowLogin }: AppProps) {
             </button>
           )}
           
-          <button
-            onClick={() => setShowImageGenerator(true)}
-            style={{
-              padding: '8px 16px',
-              background: 'transparent',
-              color: '#5f6368',
-              border: '1px solid #dadce0',
-              borderRadius: '20px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: 500,
-              transition: 'all 0.2s',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#f8f9fa';
-              e.currentTarget.style.borderColor = '#1a73e8';
-              e.currentTarget.style.color = '#1a73e8';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-              e.currentTarget.style.borderColor = '#dadce0';
-              e.currentTarget.style.color = '#5f6368';
-            }}
-          >
-            🎨 生成图片
-          </button>
-          
-          <button
-            onClick={() => setShowSettings(!showSettings)}
-            style={{
-              padding: '8px 16px',
-              background: 'transparent',
-              color: '#5f6368',
-              border: '1px solid #dadce0',
-              borderRadius: '20px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: 500,
-              transition: 'all 0.2s',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#f8f9fa';
-              e.currentTarget.style.borderColor = '#dadce0';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-            }}
-          >
-            ⚙️ 设置
-          </button>
-          
-          {messages.length > 0 && (
-            <button
-              onClick={clearHistory}
-              style={{
-                padding: '8px 16px',
-                background: 'transparent',
-                color: '#5f6368',
-                border: '1px solid #dadce0',
-                borderRadius: '20px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: 500,
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#fce8e6';
-                e.currentTarget.style.color = '#ea4335';
-                e.currentTarget.style.borderColor = '#ea4335';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent';
-                e.currentTarget.style.color = '#5f6368';
-                e.currentTarget.style.borderColor = '#dadce0';
-              }}
-            >
-              清除对话
-            </button>
+          {currentView === 'chat' && (
+            <>
+              <button
+                onClick={() => setShowSettings(!showSettings)}
+                style={{
+                  padding: '8px 16px',
+                  background: 'transparent',
+                  color: '#5f6368',
+                  border: '1px solid #dadce0',
+                  borderRadius: '20px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                ⚙️ 设置
+              </button>
+              
+              {messages.length > 0 && (
+                <button
+                  onClick={clearHistory}
+                  style={{
+                    padding: '8px 16px',
+                    background: 'transparent',
+                    color: '#5f6368',
+                    border: '1px solid #dadce0',
+                    borderRadius: '20px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  清除对话
+                </button>
+              )}
+            </>
           )}
           
           {isAuthenticated && onLogout && (
@@ -334,8 +361,13 @@ function App({ isAuthenticated, onLogout, onShowLogin }: AppProps) {
         </div>
       </header>
 
-      {/* 设置面板 */}
-      {showSettings && (
+      {/* 主内容区域 */}
+      {currentView === 'home' && <ClawHubNews />}
+      
+      {currentView === 'chat' && (
+        <>
+          {/* 设置面板 */}
+          {showSettings && (
         <div style={{
           padding: '16px 24px',
           background: '#f8f9fa',
@@ -392,8 +424,8 @@ function App({ isAuthenticated, onLogout, onShowLogin }: AppProps) {
         </div>
       )}
 
-      {/* 消息区域 */}
-      <div style={{ 
+          {/* 消息区域 */}
+          <div style={{ 
         flex: 1, 
         overflowY: 'auto', 
         display: 'flex',
@@ -554,8 +586,8 @@ function App({ isAuthenticated, onLogout, onShowLogin }: AppProps) {
         </div>
       </div>
 
-      {/* 输入区域 */}
-      <div style={{ 
+          {/* 输入区域 */}
+          <div style={{ 
         padding: '16px 24px 24px',
         background: '#fff',
         borderTop: messages.length > 0 ? '1px solid #e8eaed' : 'none'
@@ -648,21 +680,32 @@ function App({ isAuthenticated, onLogout, onShowLogin }: AppProps) {
         </div>
       </div>
 
-      {/* CSS 动画 */}
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 0.3; transform: scale(0.8); }
-          50% { opacity: 1; transform: scale(1); }
-        }
-      `}</style>
-
-      {/* 图片生成器弹窗 */}
-      {showImageGenerator && (
-        <ImageGeneratorNew 
-          onClose={() => setShowImageGenerator(false)}
-          isAuthenticated={isAuthenticated}
-          onShowLogin={onShowLogin}
-        />
+          {/* CSS 动画 */}
+          <style>{`
+            @keyframes pulse {
+              0%, 100% { opacity: 0.3; transform: scale(0.8); }
+              50% { opacity: 1; transform: scale(1); }
+            }
+          `}</style>
+        </>
+      )}
+      
+      {/* 图片生成器 */}
+      {currentView === 'image' && (
+        <div style={{ height: 'calc(100vh - 60px)', overflow: 'auto' }}>
+          <ImageGeneratorNew 
+            onClose={() => setCurrentView('home')}
+            isAuthenticated={isAuthenticated}
+            onShowLogin={onShowLogin}
+          />
+        </div>
+      )}
+      
+      {/* 智能分析 */}
+      {currentView === 'analysis' && (
+        <div style={{ height: 'calc(100vh - 60px)', overflow: 'auto' }}>
+          <SmartAnalysis />
+        </div>
       )}
     </div>
   );

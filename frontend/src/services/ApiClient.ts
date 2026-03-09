@@ -16,6 +16,9 @@ const apiClient = axios.create({
   },
 });
 
+// 导出 apiClient 实例供其他组件使用
+export { apiClient };
+
 // 添加请求拦截器，自动添加 token
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('auth_token');

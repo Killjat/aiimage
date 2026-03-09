@@ -1,0 +1,715 @@
+import { useState } from 'react';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+function SmartAnalysis() {
+  const [url, setUrl] = useState('');
+  const [task, setTask] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [showExamples, setShowExamples] = useState(true);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [cookies, setCookies] = useState('');
+  const [headers, setHeaders] = useState('');
+
+  // 示例任务 - 基于 Notte 实际能力设计
+  const examples = [
+    {
+      title: '� 简单内容提取',
+      url: 'https://example.com',
+      task: 'Extract the main heading text and describe what this website is for'
+    },
+    {
+      title: '� 新闻标题提取',
+      url: 'https://news.ycombinator.com',
+      task: 'List the titles of the first 3 posts on the page'
+    },
+    {
+      title: '� 价格信息提取',
+      url: 'https://www.anthropic.com/pricing',
+      task: 'What are the Claude model names and their input/output prices?'
+    },
+    {
+      title: '🔍 网站功能分析',
+      url: 'https://httpbin.org',
+      task: 'What is this website for and what are its main features?'
+    }
+  ];
+
+  const useExample = (example: typeof examples[0]) => {
+    setUrl(example.url);
+    setTask(example.task);
+    setShowExamples(false);
+  };
+
+  // 执行智能分析
+  const runAnalysis = async () => {
+    if (!url.trim() || !task.trim()) {
+      alert('请输入网址和任务描述');
+      return;
+    }
+
+    setLoading(true);
+    setResult(null);
+
+    try {
+      const payload: any = {
+        task: task,
+        start_url: url,
+        max_steps: 20
+      };
+
+      // 如果用户提供了 cookies 或 headers，添加到请求中
+      if (cookies.trim()) {
+        payload.cookies = cookies.trim();
+      }
+      if (headers.trim()) {
+        payload.headers = headers.trim();
+      }
+
+      const response = await fetch(`${API_BASE_URL}/notte/agent/run`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+      setResult(data);
+    } catch (error: any) {
+      setResult({ success: false, error: error.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      padding: '80px 24px 60px'
+    }}>
+      {/* Hero Section */}
+      <div style={{
+        maxWidth: '900px',
+        margin: '0 auto 40px',
+        textAlign: 'center',
+        color: 'white'
+      }}>
+        <h1 style={{
+          fontSize: '48px',
+          fontWeight: 700,
+          margin: '0 0 16px 0',
+          textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
+          🤖 AI 智能网站分析
+        </h1>
+        <p style={{
+          fontSize: '20px',
+          margin: '0 0 16px 0',
+          opacity: 0.9
+        }}>
+          基于分布全球 1000台住宅IP 的强大网页抓取和分析能力
+        </p>
+        <p style={{
+          fontSize: '16px',
+          margin: 0,
+          opacity: 0.8
+        }}>
+          自动提取网页内容、分析网站功能、获取结构化数据
+        </p>
+      </div>
+
+      {/* 能力介绍 */}
+      <div style={{
+        maxWidth: '900px',
+        margin: '0 auto 32px'
+      }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '16px'
+        }}>
+          {[
+            { icon: '📊', title: '结构化提取', desc: '提取表格、列表等结构化数据' },
+            { icon: '🔍', title: '内容分析', desc: '理解网站功能和主要内容' },
+            { icon: '💰', title: '价格监控', desc: '提取产品价格和规格信息' },
+            { icon: '📰', title: '新闻聚合', desc: '批量提取文章标题和链接' }
+          ].map((item, index) => (
+            <div
+              key={index}
+              style={{
+                background: 'rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(10px)',
+                padding: '20px',
+                borderRadius: '12px',
+                textAlign: 'center',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
+              }}
+            >
+              <div style={{ fontSize: '32px', marginBottom: '8px' }}>{item.icon}</div>
+              <div style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px', color: 'white' }}>
+                {item.title}
+              </div>
+              <div style={{ fontSize: '13px', opacity: 0.8, color: 'white' }}>
+                {item.desc}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 分析表单 */}
+      <div style={{
+        maxWidth: '900px',
+        margin: '0 auto'
+      }}>
+        {/* 示例任务 */}
+        {showExamples && (
+          <div style={{
+            background: 'white',
+            borderRadius: '16px',
+            padding: '32px',
+            marginBottom: '24px',
+            boxShadow: '0 10px 40px rgba(0,0,0,0.15)'
+          }}>
+            <h3 style={{
+              fontSize: '20px',
+              fontWeight: 600,
+              color: '#202124',
+              margin: '0 0 20px 0',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              💡 快速开始 - 点击示例试试
+            </h3>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '12px'
+            }}>
+              {examples.map((example, index) => (
+                <button
+                  key={index}
+                  onClick={() => useExample(example)}
+                  style={{
+                    padding: '16px',
+                    background: '#f8f9fa',
+                    border: '2px solid #e8eaed',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#667eea';
+                    e.currentTarget.style.background = '#f0f4ff';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#e8eaed';
+                    e.currentTarget.style.background = '#f8f9fa';
+                  }}
+                >
+                  <div style={{
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#202124',
+                    marginBottom: '8px'
+                  }}>
+                    {example.title}
+                  </div>
+                  <div style={{
+                    fontSize: '12px',
+                    color: '#5f6368',
+                    lineHeight: '1.4'
+                  }}>
+                    {example.task}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div style={{
+          background: 'white',
+          borderRadius: '16px',
+          padding: '40px',
+          boxShadow: '0 10px 40px rgba(0,0,0,0.15)'
+        }}>
+          <div style={{ marginBottom: '24px' }}>
+            <label style={{
+              display: 'block',
+              fontSize: '16px',
+              fontWeight: 600,
+              color: '#202124',
+              marginBottom: '12px'
+            }}>
+              🌐 网站地址
+            </label>
+            <input
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="https://example.com"
+              style={{
+                width: '100%',
+                padding: '16px',
+                border: '2px solid #e8eaed',
+                borderRadius: '12px',
+                fontSize: '16px',
+                outline: 'none',
+                transition: 'all 0.2s',
+                fontFamily: 'inherit'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = '#667eea';
+                e.currentTarget.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = '#e8eaed';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: '32px' }}>
+            <label style={{
+              display: 'block',
+              fontSize: '16px',
+              fontWeight: 600,
+              color: '#202124',
+              marginBottom: '12px'
+            }}>
+              💭 提取指令（建议使用英文）
+            </label>
+            <textarea
+              value={task}
+              onChange={(e) => setTask(e.target.value)}
+              placeholder="例如：&#10;What is the main heading on this page?&#10;List the titles of the first 5 articles&#10;What are the product names and their prices?&#10;Describe what this website does"
+              rows={6}
+              style={{
+                width: '100%',
+                padding: '16px',
+                border: '2px solid #e8eaed',
+                borderRadius: '12px',
+                fontSize: '16px',
+                outline: 'none',
+                resize: 'vertical',
+                fontFamily: 'inherit',
+                transition: 'all 0.2s',
+                lineHeight: '1.6'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = '#667eea';
+                e.currentTarget.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = '#e8eaed';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            />
+            <div style={{
+              marginTop: '8px',
+              fontSize: '13px',
+              color: '#5f6368',
+              lineHeight: '1.5'
+            }}>
+              💡 提示：使用问句形式效果更好，如 "What are the main features?" 或 "List the article titles"
+            </div>
+          </div>
+
+          <button
+            onClick={runAnalysis}
+            disabled={loading || !url.trim() || !task.trim()}
+            style={{
+              width: '100%',
+              padding: '18px',
+              background: loading || !url.trim() || !task.trim() 
+                ? '#e8eaed' 
+                : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              cursor: loading || !url.trim() || !task.trim() ? 'not-allowed' : 'pointer',
+              fontSize: '18px',
+              fontWeight: 700,
+              transition: 'all 0.3s',
+              boxShadow: loading || !url.trim() || !task.trim() 
+                ? 'none' 
+                : '0 4px 16px rgba(102, 126, 234, 0.4)',
+              letterSpacing: '0.5px'
+            }}
+            onMouseEnter={(e) => {
+              if (!loading && url.trim() && task.trim()) {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(102, 126, 234, 0.5)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 16px rgba(102, 126, 234, 0.4)';
+            }}
+          >
+            {loading ? '🔄 AI 分析中...' : '🚀 开始分析'}
+          </button>
+
+          {/* 高级选项 */}
+          <div style={{ marginTop: '24px' }}>
+            <button
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              style={{
+                padding: '12px 20px',
+                background: 'transparent',
+                color: '#667eea',
+                border: '2px dashed #667eea',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 600,
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                margin: '0 auto'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#f0f4ff';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+              }}
+            >
+              🔐 高级选项：登录凭证
+              <span style={{ fontSize: '12px' }}>
+                {showAdvanced ? '▲' : '▼'}
+              </span>
+            </button>
+
+            {showAdvanced && (
+              <div style={{
+                marginTop: '16px',
+                padding: '20px',
+                background: '#fff9e6',
+                border: '2px solid #ffd700',
+                borderRadius: '12px'
+              }}>
+                <div style={{
+                  marginBottom: '16px',
+                  padding: '12px',
+                  background: 'white',
+                  borderRadius: '8px',
+                  fontSize: '13px',
+                  color: '#856404',
+                  lineHeight: '1.6'
+                }}>
+                  <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>⚠️ 重要提示</p>
+                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                    <li>仅在需要登录的网站时使用</li>
+                    <li>我们不会存储您的凭证</li>
+                    <li>建议使用测试账号</li>
+                    <li>您对使用自己的账号负全部责任</li>
+                  </ul>
+                </div>
+
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#202124',
+                    marginBottom: '8px'
+                  }}>
+                    🍪 Cookies（可选）
+                  </label>
+                  <textarea
+                    value={cookies}
+                    onChange={(e) => setCookies(e.target.value)}
+                    placeholder="粘贴浏览器的 Cookie 字符串，例如：&#10;session_id=abc123; user_token=xyz789"
+                    rows={3}
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '2px solid #e8eaed',
+                      borderRadius: '8px',
+                      fontSize: '13px',
+                      fontFamily: 'monospace',
+                      outline: 'none',
+                      resize: 'vertical'
+                    }}
+                  />
+                  <div style={{
+                    marginTop: '8px',
+                    fontSize: '12px',
+                    color: '#5f6368'
+                  }}>
+                    💡 如何获取：浏览器开发者工具 → Network → 复制 Cookie 请求头
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#202124',
+                    marginBottom: '8px'
+                  }}>
+                    📋 自定义请求头（可选）
+                  </label>
+                  <textarea
+                    value={headers}
+                    onChange={(e) => setHeaders(e.target.value)}
+                    placeholder="JSON 格式的自定义请求头，例如：&#10;{&#10;  &quot;Authorization&quot;: &quot;Bearer token123&quot;,&#10;  &quot;X-Custom-Header&quot;: &quot;value&quot;&#10;}"
+                    rows={4}
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '2px solid #e8eaed',
+                      borderRadius: '8px',
+                      fontSize: '13px',
+                      fontFamily: 'monospace',
+                      outline: 'none',
+                      resize: 'vertical'
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 提示信息 */}
+          {!loading && !result && (
+            <div style={{
+              marginTop: '24px',
+              padding: '20px',
+              background: '#f8f9fa',
+              borderRadius: '12px',
+              fontSize: '14px',
+              color: '#5f6368',
+              lineHeight: '1.6'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px',
+                marginBottom: '16px'
+              }}>
+                <span style={{ fontSize: '24px' }}>💡</span>
+                <div style={{ flex: 1 }}>
+                  <p style={{ margin: '0 0 12px 0', fontWeight: 600, color: '#202124' }}>
+                    使用技巧
+                  </p>
+                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                    <li>使用问句形式，如 "What are...?" 或 "List the..."</li>
+                    <li>保持指令简单明确，避免过于复杂的要求</li>
+                    <li>简单网站响应更快，复杂网站可能需要 20-40 秒</li>
+                    <li>避免使用有严格反爬虫保护的网站</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px'
+              }}>
+                <span style={{ fontSize: '24px' }}>✅</span>
+                <div style={{ flex: 1 }}>
+                  <p style={{ margin: '0 0 8px 0', fontWeight: 600, color: '#202124' }}>
+                    推荐网站类型
+                  </p>
+                  <p style={{ margin: 0 }}>
+                    新闻网站、博客、产品页面、文档网站、开源项目等公开内容
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 加载状态 */}
+          {loading && (
+            <div style={{
+              marginTop: '32px',
+              padding: '32px',
+              background: '#f8f9fa',
+              borderRadius: '12px',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                width: '48px',
+                height: '48px',
+                border: '4px solid #e8eaed',
+                borderTopColor: '#667eea',
+                borderRadius: '50%',
+                margin: '0 auto 16px',
+                animation: 'spin 0.8s linear infinite'
+              }} />
+              <p style={{
+                fontSize: '16px',
+                color: '#5f6368',
+                margin: 0
+              }}>
+                AI 正在分析网站，请稍候...
+              </p>
+            </div>
+          )}
+
+          {/* 结果显示 */}
+          {result && !loading && (
+            <div style={{
+              marginTop: '32px',
+              padding: '24px',
+              background: result.success && result.data?.structured?.success ? '#e8f5e9' : '#fce8e6',
+              borderRadius: '12px',
+              border: `2px solid ${result.success && result.data?.structured?.success ? '#81c784' : '#ef5350'}`
+            }}>
+              <h3 style={{
+                fontSize: '18px',
+                fontWeight: 600,
+                color: result.success && result.data?.structured?.success ? '#2e7d32' : '#c62828',
+                margin: '0 0 16px 0',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                {result.success && result.data?.structured?.success ? '✅ 分析完成' : '❌ 分析失败'}
+              </h3>
+
+              {/* 显示错误信息 */}
+              {(result.error || result.data?.structured?.error) && (
+                <div style={{
+                  padding: '16px',
+                  background: 'white',
+                  borderRadius: '8px',
+                  marginBottom: '16px'
+                }}>
+                  <p style={{
+                    fontSize: '15px',
+                    color: '#c62828',
+                    margin: '0 0 12px 0',
+                    fontWeight: 600
+                  }}>
+                    错误信息：
+                  </p>
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#5f6368',
+                    margin: 0,
+                    lineHeight: '1.6'
+                  }}>
+                    {result.error || result.data?.structured?.error}
+                  </p>
+                  
+                  {result.data?.markdown && (
+                    <>
+                      <p style={{
+                        fontSize: '15px',
+                        color: '#c62828',
+                        margin: '16px 0 8px 0',
+                        fontWeight: 600
+                      }}>
+                        网站返回内容：
+                      </p>
+                      <p style={{
+                        fontSize: '13px',
+                        color: '#5f6368',
+                        margin: 0,
+                        lineHeight: '1.6',
+                        fontStyle: 'italic'
+                      }}>
+                        {result.data.markdown}
+                      </p>
+                    </>
+                  )}
+                  
+                  <div style={{
+                    marginTop: '16px',
+                    padding: '12px',
+                    background: '#fff3cd',
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    color: '#856404'
+                  }}>
+                    💡 可能的原因：
+                    <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+                      <li>网站有反爬虫保护</li>
+                      <li>需要登录才能访问</li>
+                      <li>网站阻止了自动化访问</li>
+                      <li>地理位置限制</li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+
+              {/* 显示成功的分析结果 */}
+              {result.success && result.data?.structured?.success && result.data.structured.data && (
+                <div style={{
+                  background: 'white',
+                  padding: '20px',
+                  borderRadius: '8px'
+                }}>
+                  {result.data.structured.data.analysis && (
+                    <div style={{ marginBottom: '20px' }}>
+                      <h4 style={{
+                        fontSize: '16px',
+                        fontWeight: 600,
+                        color: '#202124',
+                        margin: '0 0 12px 0'
+                      }}>
+                        📊 分析结果
+                      </h4>
+                      <p style={{
+                        fontSize: '14px',
+                        color: '#5f6368',
+                        margin: 0,
+                        lineHeight: '1.8'
+                      }}>
+                        {result.data.structured.data.analysis}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {result.data.structured.data.key_findings && result.data.structured.data.key_findings.length > 0 && (
+                    <div>
+                      <h4 style={{
+                        fontSize: '16px',
+                        fontWeight: 600,
+                        color: '#202124',
+                        margin: '0 0 12px 0'
+                      }}>
+                        🔑 关键发现
+                      </h4>
+                      <ul style={{
+                        margin: 0,
+                        paddingLeft: '20px',
+                        fontSize: '14px',
+                        color: '#5f6368',
+                        lineHeight: '1.8'
+                      }}>
+                        {result.data.structured.data.key_findings.map((finding: string, index: number) => (
+                          <li key={index} style={{ marginBottom: '8px' }}>
+                            {finding}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* CSS 动画 */}
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+export default SmartAnalysis;

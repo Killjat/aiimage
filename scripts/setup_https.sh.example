@@ -1,0 +1,33 @@
+#!/bin/bash
+
+REMOTE_HOST="your.server.ip"  # 修改为你的服务器IP
+REMOTE_USER="root"
+SSH_PASSWORD=""  # 在这里填写SSH密码
+DOMAIN="your.domain.com"  # 修改为你的域名
+
+SSH_CMD="sshpass -p '$SSH_PASSWORD' ssh -o StrictHostKeyChecking=no"
+
+echo "=== 配置HTTPS证书 ==="
+echo ""
+
+eval "$SSH_CMD $REMOTE_USER@$REMOTE_HOST" << 'ENDSSH'
+set -e
+
+# 安装certbot
+if ! command -v certbot &> /dev/null; then
+    echo "安装 certbot..."
+    yum install -y certbot python3-certbot-nginx || apt-get install -y certbot python3-certbot-nginx
+fi
+
+# 获取证书
+certbot --nginx -d $DOMAIN --non-interactive --agree-tos --email your@email.com
+
+# 自动续期
+echo "0 0 * * * certbot renew --quiet" | crontab -
+
+echo "HTTPS配置完成！"
+ENDSSH
+
+echo ""
+echo "=== HTTPS配置成功！==="
+echo "访问: https://$DOMAIN"
