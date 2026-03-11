@@ -1,0 +1,18 @@
+{
+    "timestamp": "2026-03-11 02:39:13",
+    "results": {
+        "alibaba-wan2.6-t2i": "success",
+        "alibaba-qwen-image-2.0-pro": "success",
+        "alibaba-qwen-image-2.0": "success",
+        "alibaba-qwen-image-max": "success",
+        "alibaba-qwen-image-plus": "success",
+        "alibaba-qwen-image": "success",
+        "black-forest-labs\/flux.2-pro": "success",
+        "black-forest-labs\/flux.2-flex": "error"
+    },
+    "summary": {
+        "success": 7,
+        "failed": 1,
+        "total": 8
+    }
+}

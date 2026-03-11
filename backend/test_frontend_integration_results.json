@@ -1,0 +1,48 @@
+{
+    "timestamp": "2026-03-11 02:45:06",
+    "results": {
+        "alibaba-wan2.6-t2i": {
+            "status": "success",
+            "response_size": 387,
+            "image_type": "http_url"
+        },
+        "alibaba-qwen-image-2.0-pro": {
+            "status": "success",
+            "response_size": 400,
+            "image_type": "http_url"
+        },
+        "alibaba-qwen-image-2.0": {
+            "status": "success",
+            "response_size": 396,
+            "image_type": "http_url"
+        },
+        "alibaba-qwen-image-max": {
+            "status": "success",
+            "response_size": 413,
+            "image_type": "http_url"
+        },
+        "alibaba-qwen-image-plus": {
+            "status": "success",
+            "response_size": 429,
+            "image_type": "http_url"
+        },
+        "alibaba-qwen-image": {
+            "status": "success",
+            "response_size": 427,
+            "image_type": "http_url"
+        },
+        "black-forest-labs\/flux.2-pro": {
+            "status": "success",
+            "response_size": 2075007,
+            "image_type": "base64"
+        },
+        "black-forest-labs\/flux.2-flex": {
+            "status": "error"
+        }
+    },
+    "summary": {
+        "success": 7,
+        "failed": 1,
+        "total": 8
+    }
+}

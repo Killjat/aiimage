@@ -16,7 +16,8 @@ class ChatController
     {
         $openRouterService = new OpenRouterService();
         $deepSeekService = new DeepSeekService();
-        $this->aiServiceManager = new AIServiceManager($openRouterService, $deepSeekService);
+        $aliBailianService = new \App\Services\AliBailianService();
+        $this->aiServiceManager = new AIServiceManager($openRouterService, $deepSeekService, $aliBailianService);
     }
 
     /**

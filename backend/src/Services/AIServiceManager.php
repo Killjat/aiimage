@@ -6,13 +6,16 @@ class AIServiceManager
 {
     private OpenRouterService $openRouterService;
     private DeepSeekService $deepSeekService;
+    private AliBailianService $aliBailianService;
 
     public function __construct(
         OpenRouterService $openRouterService,
-        DeepSeekService $deepSeekService
+        DeepSeekService $deepSeekService,
+        AliBailianService $aliBailianService
     ) {
         $this->openRouterService = $openRouterService;
         $this->deepSeekService = $deepSeekService;
+        $this->aliBailianService = $aliBailianService;
     }
 
     /**
@@ -53,7 +56,7 @@ class AIServiceManager
     }
 
     /**
-     * 生成图片（仅 OpenRouter 支持）
+     * 生成图片（支持 OpenRouter 和阿里巴巴）
      * 
      * @param string $model
      * @param string $prompt
@@ -70,6 +73,41 @@ class AIServiceManager
         ?string $aspectRatio = null,
         ?string $imageSize = null
     ): array {
+        // 判断使用哪个服务
+        $provider = $this->getImageServiceProvider($model);
+        
+        if ($provider === 'alibaba') {
+            // 阿里巴巴图片生成
+            $result = $this->aliBailianService->generateImage(
+                $prompt,
+                $model,
+                null,
+                '<auto>',
+                $imageSize ?? '1024*1024',
+                1,
+                $baseImage
+            );
+            
+            // 统一返回格式
+            if (isset($result['images']) && !empty($result['images'])) {
+                return [
+                    'image_url' => $result['images'][0],
+                    'model' => $model,
+                    'prompt' => $prompt
+                ];
+            } elseif (isset($result['task_id'])) {
+                // 异步任务
+                return [
+                    'task_id' => $result['task_id'],
+                    'model' => $model,
+                    'prompt' => $prompt,
+                    'status' => 'processing'
+                ];
+            }
+            
+            throw new \Exception('阿里巴巴图片生成失败');
+        }
+        
         // OpenRouter 图片生成
         return $this->openRouterService->generateImage(
             $model,
@@ -78,6 +116,22 @@ class AIServiceManager
             $aspectRatio,
             $imageSize
         );
+    }
+
+    /**
+     * 判断图片生成使用哪个服务
+     * 
+     * @param string $model
+     * @return string 'alibaba' 或 'openrouter'
+     */
+    private function getImageServiceProvider(string $model): string
+    {
+        // 阿里巴巴模型以 'alibaba-' 开头
+        if (strpos($model, 'alibaba-') === 0) {
+            return 'alibaba';
+        }
+        
+        return 'openrouter';
     }
 
     /**
@@ -290,6 +344,34 @@ class AIServiceManager
             }, $models);
         } catch (\Exception $e) {
             error_log('获取 OpenRouter 模型失败: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * 获取阿里巴巴图片生成模型列表
+     * 
+     * @return array
+     */
+    public function getAliBailianImageModels(): array
+    {
+        try {
+            $models = $this->aliBailianService->getSupportedModels();
+            $result = [];
+            
+            foreach ($models as $modelId => $modelInfo) {
+                $result[] = [
+                    'id' => 'alibaba-' . $modelId,
+                    'name' => $modelInfo['name'] ?? $modelId,
+                    'provider' => 'alibaba',
+                    'type' => 'image',
+                    'description' => $modelInfo['description'] ?? ''
+                ];
+            }
+            
+            return $result;
+        } catch (\Exception $e) {
+            error_log('获取阿里巴巴模型失败: ' . $e->getMessage());
             return [];
         }
     }

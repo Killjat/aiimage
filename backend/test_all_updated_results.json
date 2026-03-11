@@ -1,0 +1,84 @@
+{
+    "wan2.6-t2i": {
+        "status": "completed",
+        "images": [
+            "https://dashscope-a717.oss-accelerate.aliyuncs.com/1d/d9/20260310/3523ac78/11707618-muIiCj7w_ceb6ebdd9a8a.png?Expires=1773238389&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=X6%2BxyVI7X2hpxQYQmeTESt%2FbdNQ%3D"
+        ],
+        "message": "\u56fe\u7247\u751f\u6210\u6210\u529f"
+    },
+    "wan2.5-t2i-preview": {
+        "status": "completed",
+        "task_id": "982598ca-8e85-4e37-92aa-d3643cecf439",
+        "message": "\u4efb\u52a1\u521b\u5efa\u6210\u529f\uff0c\u6b63\u5728\u751f\u6210\u56fe\u7247...",
+        "images": [
+            "https://dashscope-7c2c.oss-cn-shanghai.aliyuncs.com/1d/6a/20260310/c71e5d29/982598ca-8e85-4e37-92aa-d3643cecf439.png?Expires=1773238417&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=FQbOen%2FDlwH6yyROJSVAONvJ2G0%3D"
+        ]
+    },
+    "wan2.2-t2i-flash": {
+        "status": "completed",
+        "task_id": "681d566b-b3aa-4234-be45-7b4603558f95",
+        "message": "\u4efb\u52a1\u521b\u5efa\u6210\u529f\uff0c\u6b63\u5728\u751f\u6210\u56fe\u7247...",
+        "images": [
+            "https://dashscope-result-wlcb-acdr-1.oss-cn-wulanchabu-acdr-1.aliyuncs.com/1d/d3/20260310/bf68d313/681d566b-b3aa-4234-be45-7b4603558f953186086438.png?Expires=1773238398&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=B6IuMUUEvfTm0gf3899%2FjTpVwJo%3D"
+        ]
+    },
+    "wanx-v1": {
+        "status": "completed",
+        "task_id": "78fcfbc6-9965-4a3e-8267-2d63d292e92d",
+        "message": "\u4efb\u52a1\u521b\u5efa\u6210\u529f\uff0c\u6b63\u5728\u751f\u6210\u56fe\u7247...",
+        "images": [
+            "https://dashscope-result-bj.oss-cn-beijing.aliyuncs.com/1d/3c/20260310/c70535fc/d3a5cc54-c26c-4c31-bdc7-ade3a7b33ee7-1.png?Expires=1773238420&OSSAccessKeyId=LTAI5tQZd8AEcZX6KZV4G8qL&Signature=ZkrIKwP9wFyzigGGk1%2BZnVj0WmI%3D"
+        ]
+    },
+    "stable-diffusion-v1.5": {
+        "status": "error",
+        "message": "\u963f\u91cc\u767e\u7ec3\u56fe\u7247\u751f\u6210\u5931\u8d25: Client error: `POST https://dashscope.aliyuncs.com/api/v1/services/aigc/text2image/image-synthesis` resulted in a `403 Forbidden` response:\n{\"code\":\"AccessDenied\",\"message\":\"Access denied. For details, see: https://help.aliyun.com/zh/model-studio/error-code#ac (truncated...)\n"
+    },
+    "stable-diffusion-xl": {
+        "status": "error",
+        "message": "\u963f\u91cc\u767e\u7ec3\u56fe\u7247\u751f\u6210\u5931\u8d25: Client error: `POST https://dashscope.aliyuncs.com/api/v1/services/aigc/text2image/image-synthesis` resulted in a `403 Forbidden` response:\n{\"code\":\"AccessDenied\",\"message\":\"Access denied. For details, see: https://help.aliyun.com/zh/model-studio/error-code#ac (truncated...)\n"
+    },
+    "stable-diffusion-3.5-large": {
+        "status": "error",
+        "message": "\u963f\u91cc\u767e\u7ec3\u56fe\u7247\u751f\u6210\u5931\u8d25: Client error: `POST https://dashscope.aliyuncs.com/api/v1/services/aigc/text2image/image-synthesis` resulted in a `403 Forbidden` response:\n{\"code\":\"AccessDenied\",\"message\":\"Access denied. For details, see: https://help.aliyun.com/zh/model-studio/error-code#ac (truncated...)\n"
+    },
+    "qwen-image-2.0-pro": {
+        "status": "completed",
+        "images": [
+            "https://dashscope-7c2c.oss-cn-shanghai.aliyuncs.com/7d/21/20260310/519b4a62/ee850394-4a35-47b8-97a1-08dea12a3e4b.png?Expires=1773757798&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=V7SJpyuEm%2B56xZEpuQmKdAqsjHE%3D"
+        ],
+        "message": "\u56fe\u7247\u751f\u6210\u6210\u529f"
+    },
+    "qwen-image-2.0": {
+        "status": "completed",
+        "images": [
+            "https://dashscope-7c2c.oss-cn-shanghai.aliyuncs.com/7d/08/20260310/0aba9d4e/610d8f25-d3b2-4846-9cd9-d92888f4abf7.png?Expires=1773757803&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=DCGKMstYuyciC%2BpjfRaE0A6hkCY%3D"
+        ],
+        "message": "\u56fe\u7247\u751f\u6210\u6210\u529f"
+    },
+    "qwen-image-max": {
+        "status": "completed",
+        "images": [
+            "https://dashscope-result-sh.oss-cn-shanghai.aliyuncs.com/7d/24/20260310/d23adf3d/7d43315a-6442-4b02-bb4e-58c11df464403701126851.png?Expires=1773757816&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=Lcf4%2BrRnNeBag5lxJFi3hItki%2Fs%3D"
+        ],
+        "message": "\u56fe\u7247\u751f\u6210\u6210\u529f"
+    },
+    "qwen-image-plus": {
+        "status": "completed",
+        "images": [
+            "https://dashscope-result-wlcb-acdr-1.oss-cn-wulanchabu-acdr-1.aliyuncs.com/7d/4a/20260310/cfc32567/eea11ea0-3b4d-436d-9607-8f0ec880b8563694953460.png?Expires=1773757822&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=6HcCZDWaRsnDYNjpWZqPHdIKPFs%3D"
+        ],
+        "message": "\u56fe\u7247\u751f\u6210\u6210\u529f"
+    },
+    "qwen-image": {
+        "status": "completed",
+        "images": [
+            "https://dashscope-result-wlcb-acdr-1.oss-cn-wulanchabu-acdr-1.aliyuncs.com/7d/7c/20260310/cfc32567/79638ed9-3b91-4b82-b110-6308387bcead105164551.png?Expires=1773757827&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=rVx0T%2FvbYA8%2FJdUioYVnhuYg4cU%3D"
+        ],
+        "message": "\u56fe\u7247\u751f\u6210\u6210\u529f"
+    },
+    "qwen-image-edit-plus": {
+        "status": "error",
+        "message": "\u963f\u91cc\u767e\u7ec3\u56fe\u7247\u751f\u6210\u5931\u8d25: Client error: `POST https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation` resulted in a `400 Bad Request` response:\n{\"request_id\":\"110adb69-44e5-4a9a-a3e4-62ad0f002189\",\"code\":\"InvalidParameter\",\"message\":\"For image editing, the message (truncated...)\n"
+    }
+}

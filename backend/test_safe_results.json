@@ -1,0 +1,33 @@
+{
+    "wan2.6-t2i": {
+        "status": "completed",
+        "images": [
+            "https://dashscope-a717.oss-accelerate.aliyuncs.com/1d/41/20260310/3523ac78/86107175-ItIUePfg_c815eac3e97e.png?Expires=1773238290&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=AA0uFf6rmGaHBzUFY%2B8k167oQp4%3D"
+        ],
+        "message": "\u56fe\u7247\u751f\u6210\u6210\u529f"
+    },
+    "wan2.2-t2i-flash": {
+        "status": "task_created",
+        "task_id": "839f47f4-6113-4ff2-9cc6-2ee368440255",
+        "message": "\u4efb\u52a1\u521b\u5efa\u6210\u529f\uff0c\u6b63\u5728\u751f\u6210\u56fe\u7247..."
+    },
+    "wanx-v1": {
+        "status": "task_created",
+        "task_id": "ef474b6b-2439-4d2e-b77d-33d35e4adc5b",
+        "message": "\u4efb\u52a1\u521b\u5efa\u6210\u529f\uff0c\u6b63\u5728\u751f\u6210\u56fe\u7247..."
+    },
+    "qwen-image-2.0-pro": {
+        "status": "completed",
+        "images": [
+            "https://dashscope-7c2c.oss-cn-shanghai.aliyuncs.com/7d/a3/20260310/519b4a62/84bda31c-b86c-436c-954d-b14bf08e18af.png?Expires=1773757698&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=gD3DM2P4v8upfw00xNW92dCMb9A%3D"
+        ],
+        "message": "\u56fe\u7247\u751f\u6210\u6210\u529f"
+    },
+    "qwen-image-2.0": {
+        "status": "completed",
+        "images": [
+            "https://dashscope-7c2c.oss-cn-shanghai.aliyuncs.com/7d/5a/20260310/0aba9d4e/bb362aa8-c1b2-4d2a-9fe1-af98afb883af.png?Expires=1773757702&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=LlgpEAtlzThQupjQq%2FlttOrCq7g%3D"
+        ],
+        "message": "\u56fe\u7247\u751f\u6210\u6210\u529f"
+    }
+}

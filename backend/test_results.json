@@ -1,0 +1,65 @@
+{
+    "wan2.6-t2i": {
+        "status": "error",
+        "message": "url error, please check url！ For details, see: https:\/\/help.aliyun.com\/zh\/model-studio\/error-code#error-url"
+    },
+    "wan2.5-t2i-preview": {
+        "status": "failed",
+        "task_id": "0d0d8c87-07a8-42de-8424-9585691be8e8",
+        "model": "wan2.5-t2i-preview",
+        "size": "1280*1280",
+        "error": "Output data may contain inappropriate content."
+    },
+    "wan2.2-t2i-flash": {
+        "status": "completed",
+        "task_id": "78691a7c-cab4-4bc3-8548-2af77814c5b8",
+        "model": "wan2.2-t2i-flash",
+        "size": "1024*1024",
+        "image_url": "https:\/\/dashscope-result-wlcb-acdr-1.oss-cn-wulanchabu-acdr-1.aliyuncs.com\/1d\/9e\/20260310\/bf68d313\/78691a7c-cab4-4bc3-8548-2af77814c5b83880728499.png?Expires=1773237875&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=fZDKvph1L6m2LFYFydxNqKtTCGk%3D"
+    },
+    "wanx-v1": {
+        "status": "completed",
+        "task_id": "2dd300f9-25c7-4ed3-9aa5-9d95a2137acd",
+        "model": "wanx-v1",
+        "size": "1024*1024",
+        "image_url": "https:\/\/dashscope-result-bj.oss-cn-beijing.aliyuncs.com\/1d\/40\/20260310\/c70535fc\/ad845776-f28a-48d2-b8bf-4c7ab5932c9d-1.png?Expires=1773237903&OSSAccessKeyId=LTAI5tQZd8AEcZX6KZV4G8qL&Signature=kl0aKqb7uHCvK90jV%2FlnDru1n7A%3D"
+    },
+    "stable-diffusion-v1.5": {
+        "status": "error",
+        "message": "Access denied. For details, see: https:\/\/help.aliyun.com\/zh\/model-studio\/error-code#access-denied"
+    },
+    "stable-diffusion-xl": {
+        "status": "error",
+        "message": "Access denied. For details, see: https:\/\/help.aliyun.com\/zh\/model-studio\/error-code#access-denied"
+    },
+    "stable-diffusion-3.5-large": {
+        "status": "error",
+        "message": "Access denied. For details, see: https:\/\/help.aliyun.com\/zh\/model-studio\/error-code#access-denied"
+    },
+    "qwen-image-2.0-pro": {
+        "status": "error",
+        "message": "url error, please check url！ For details, see: https:\/\/help.aliyun.com\/zh\/model-studio\/error-code#error-url"
+    },
+    "qwen-image-2.0": {
+        "status": "error",
+        "message": "url error, please check url！ For details, see: https:\/\/help.aliyun.com\/zh\/model-studio\/error-code#error-url"
+    },
+    "qwen-image-max": {
+        "status": "error",
+        "message": "url error, please check url！ For details, see: https:\/\/help.aliyun.com\/zh\/model-studio\/error-code#error-url"
+    },
+    "qwen-image-plus": {
+        "status": "failed",
+        "task_id": "833a458a-74a7-4676-8677-5a675a019e3f",
+        "model": "qwen-image-plus",
+        "size": "1024*1024",
+        "error": "Output data may contain inappropriate content."
+    },
+    "qwen-image": {
+        "status": "failed",
+        "task_id": "4c944f81-8809-443f-a307-5059a809dfd5",
+        "model": "qwen-image",
+        "size": "1024*1024",
+        "error": "Output data may contain inappropriate content."
+    }
+}

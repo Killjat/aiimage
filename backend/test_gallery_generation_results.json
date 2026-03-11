@@ -1,0 +1,20 @@
+[
+    {
+        "index": 1,
+        "status": "success",
+        "model": "wan2.6-t2i",
+        "image_url": "https:\/\/dashscope-a717.oss-accelerate.aliyuncs.com\/1d\/c5\/20260311\/3523ac78\/21417647-rPhazn7M_a492eea7a533.png?Expires=1773285844&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=WVvPTnw082x5y%2FVBuEupHeQiXRM%3D"
+    },
+    {
+        "index": 2,
+        "status": "success",
+        "model": "qwen-image-2.0-pro",
+        "image_url": "https:\/\/dashscope-7c2c.oss-cn-shanghai.aliyuncs.com\/7d\/c2\/20260311\/519b4a62\/3635a8d5-cb44-471e-8604-fd57227d9d6e.png?Expires=1773805258&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=%2Fj96qmmAZxRdW3n3Q5wNHc0k%2Bi0%3D"
+    },
+    {
+        "index": 3,
+        "status": "success",
+        "model": "qwen-image-2.0",
+        "image_url": "https:\/\/dashscope-7c2c.oss-cn-shanghai.aliyuncs.com\/7d\/a4\/20260311\/0aba9d4e\/3d47cd8b-6ef2-4085-ae37-02c622595450.png?Expires=1773805268&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=a2ZXIfreYa5B75%2Bkejz%2FqpuTICg%3D"
+    }
+]

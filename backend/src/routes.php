@@ -6,6 +6,7 @@ use App\Controllers\ImageController;
 use App\Controllers\AuthController;
 use App\Controllers\WebAnalysisController;
 use App\Controllers\NotteController;
+use App\Controllers\GalleryController;
 use Slim\Routing\RouteCollectorProxy;
 
 // Auth routes (public)
@@ -44,6 +45,9 @@ $app->group('/api/image', function (RouteCollectorProxy $group) {
     $imageController = new ImageController();
     
     $group->post('/generate', [$imageController, 'generate']);
+    $group->post('/generate/bailian', [$imageController, 'generateBailian']);
+    $group->get('/bailian/task/{taskId}', [$imageController, 'getBailianTaskResult']);
+    $group->get('/bailian/config', [$imageController, 'getBailianConfig']);
     $group->get('/models', [$imageController, 'getImageModels']);
     $group->get('/quota', [$imageController, 'getQuota']);
     $group->get('/history', [$imageController, 'getHistory']);
@@ -71,4 +75,18 @@ $app->group('/api/notte', function (RouteCollectorProxy $group) {
     $group->get('/monitor/anthropic/news', [$notteController, 'monitorAnthropicNews']);
     $group->get('/monitor/anthropic/pricing', [$notteController, 'monitorAnthropicPricing']);
     $group->get('/monitor/clawhub/skills', [$notteController, 'monitorClawHubSkills']);
+});
+
+// Image gallery routes
+$app->group('/api/gallery', function (RouteCollectorProxy $group) {
+    $galleryController = new GalleryController();
+    
+    $group->get('/public', [$galleryController, 'getPublicGallery']);
+    $group->get('/user/{userId}', [$galleryController, 'getUserGallery']);
+    $group->get('/image/{imageId}', [$galleryController, 'getImage']);
+    $group->get('/search', [$galleryController, 'searchImages']);
+    $group->get('/suggestions', [$galleryController, 'getSearchSuggestions']);
+    $group->post('/image/{imageId}/like', [$galleryController, 'likeImage']);
+    $group->get('/stats/models', [$galleryController, 'getModelStats']);
+    $group->get('/stats/llm', [$galleryController, 'getLLMStats']);
 });

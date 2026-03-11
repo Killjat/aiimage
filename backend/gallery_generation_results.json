@@ -1,0 +1,122 @@
+[
+    {
+        "prompt": "A serene mountain landscape at sunrise with golden light, misty valleys, and snow-capped peaks, professional photography, 8k resolution",
+        "model": "wan2.6-t2i",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-a717.oss-accelerate.aliyuncs.com\/1d\/55\/20260311\/3523ac78\/45705436-MvcHoAOJ_fa1ff3c77a76.png?Expires=1773286182&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=tP2MOnb4%2B4A5E%2FkxTQnQ4hx%2FTfE%3D"
+    },
+    {
+        "prompt": "Tropical beach paradise with crystal clear turquoise water, white sand, palm trees, and vibrant sunset, cinematic lighting",
+        "model": "qwen-image-2.0-pro",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-7c2c.oss-cn-shanghai.aliyuncs.com\/7d\/0f\/20260311\/519b4a62\/84f6b99b-4264-44a5-95c0-6e47e433caea.png?Expires=1773805595&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=cdYwTb%2BLtNiy0S6KsidBV8QLmuQ%3D"
+    },
+    {
+        "prompt": "Ancient temple ruins in dense jungle, overgrown with vines, mysterious atmosphere, golden hour lighting, detailed architecture",
+        "model": "qwen-image-2.0",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-7c2c.oss-cn-shanghai.aliyuncs.com\/7d\/61\/20260311\/0aba9d4e\/eb080869-55e0-43d5-9a90-dd037e6ce4ff.png?Expires=1773805603&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=UB4mW8bKJyVrTJZkvaMFhrfkOtI%3D"
+    },
+    {
+        "prompt": "Northern lights dancing over a frozen lake, aurora borealis in vibrant green and purple, starry night sky, long exposure",
+        "model": "qwen-image-max",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-result-sh.oss-cn-shanghai.aliyuncs.com\/7d\/3a\/20260311\/d23adf3d\/78f98a2d-a957-44f4-8d7c-3938c8cf09031057388963.png?Expires=1773805618&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=%2F0yRmTa74wMBp65FfYrivHmDrSE%3D"
+    },
+    {
+        "prompt": "Desert sand dunes at dusk with warm orange and purple colors, minimalist composition, dramatic shadows",
+        "model": "qwen-image-plus",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-7c2c.oss-cn-shanghai.aliyuncs.com\/7d\/15\/20260311\/db7b9e77\/d859e752-534c-43a8-b4b6-6f2725cf98b11803196682.png?Expires=1773805625&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=2lQg5X6EODKN8WY1Kni0VF2c0to%3D"
+    },
+    {
+        "prompt": "Portrait of a confident woman with artistic makeup, colorful paint splashes, studio lighting, professional photography",
+        "model": "qwen-image",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-result-wlcb-acdr-1.oss-cn-wulanchabu-acdr-1.aliyuncs.com\/7d\/92\/20260311\/cfc32567\/36683b06-90e7-4614-8b54-124b6bf161512787719444.png?Expires=1773805633&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=1%2BI9SuF0HwYBhUIwvdkJZizDEyE%3D"
+    },
+    {
+        "prompt": "Young man with cyberpunk style, neon lights, futuristic fashion, dark moody atmosphere, high contrast",
+        "model": "wan2.6-t2i",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-a717.oss-accelerate.aliyuncs.com\/1d\/dc\/20260311\/3523ac78\/51214531-B3uru5D6_0ff2d0f59be4.png?Expires=1773286247&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=pi4P0cmPKNuqxie6gjmSdq11YD0%3D"
+    },
+    {
+        "prompt": "Elderly person with wise expression, warm natural lighting, detailed facial features, emotional depth",
+        "model": "qwen-image-2.0-pro",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-7c2c.oss-cn-shanghai.aliyuncs.com\/7d\/d5\/20260311\/519b4a62\/94aab810-3923-4644-9280-25addbfc28e6.png?Expires=1773805660&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=WYF%2B5BiaI9Eo6CFwqAWURoFKLik%3D"
+    },
+    {
+        "prompt": "Fashion model in elegant evening gown, dramatic lighting, luxury aesthetic, high fashion photography",
+        "model": "qwen-image-2.0",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-7c2c.oss-cn-shanghai.aliyuncs.com\/7d\/6e\/20260311\/0aba9d4e\/2bade337-6a55-4229-bf24-884ad17f6e28.png?Expires=1773805668&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=iF7Yvd10dfdGQx3t0CEX1UWw7j8%3D"
+    },
+    {
+        "prompt": "Child playing with soap bubbles in sunlight, joyful expression, soft natural lighting, warm colors",
+        "model": "qwen-image-max",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-result-sh.oss-cn-shanghai.aliyuncs.com\/7d\/35\/20260311\/d23adf3d\/dd231fd4-a88d-45e9-86c4-839eea1843503629214204.png?Expires=1773805684&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=BnrGYCZW0Iul2VLf%2F1HYdygc3vI%3D"
+    },
+    {
+        "prompt": "Abstract digital art with flowing liquid colors, geometric shapes, modern design, vibrant neon palette",
+        "model": "qwen-image-plus",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-result-wlcb-acdr-1.oss-cn-wulanchabu-acdr-1.aliyuncs.com\/7d\/3a\/20260311\/cfc32567\/a9dc312b-8bd0-4f51-ba1b-3ce9d9b622f83455045049.png?Expires=1773805692&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=NcWtdeiGL6HMLKqfI8%2BNdlvXrkU%3D"
+    },
+    {
+        "prompt": "Steampunk airship flying through clouds, intricate mechanical details, brass and copper colors, fantasy art",
+        "model": "qwen-image",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-result-wlcb-acdr-1.oss-cn-wulanchabu-acdr-1.aliyuncs.com\/7d\/4d\/20260311\/cfc32567\/8a9531af-6fb9-45f9-8079-0011d45104d93290633863.png?Expires=1773805701&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=PPDJqQvtsTIcl52tEboQyHX50II%3D"
+    },
+    {
+        "prompt": "Underwater scene with bioluminescent creatures, coral reef, magical glowing lights, surreal atmosphere",
+        "model": "wan2.6-t2i",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-a717.oss-accelerate.aliyuncs.com\/1d\/7c\/20260311\/3523ac78\/18838168-9cGLWMFq_d8482bdfbb5e.png?Expires=1773286313&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=YUpfGsDe6atGwp%2BelsJ4tUVuz5g%3D"
+    },
+    {
+        "prompt": "Enchanted forest with magical creatures, glowing mushrooms, fairy lights, fantasy illustration style",
+        "model": "qwen-image-2.0-pro",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-7c2c.oss-cn-shanghai.aliyuncs.com\/7d\/3d\/20260311\/519b4a62\/819e1b5b-d42c-400a-80e0-3e6f6f95e93f.png?Expires=1773805726&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=LBy1g1ArdpbKmvCfiDDHXWaLaCA%3D"
+    },
+    {
+        "prompt": "Space scene with multiple planets, nebula, stars, cosmic dust, deep space exploration aesthetic",
+        "model": "qwen-image-2.0",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-7c2c.oss-cn-shanghai.aliyuncs.com\/7d\/e8\/20260311\/0aba9d4e\/5e314f76-392c-48d1-ba30-06ed1d43a1b5.png?Expires=1773805734&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=Mi5KqjI8ce1O5yfh9RGOAWWo8FY%3D"
+    },
+    {
+        "prompt": "Modern futuristic city skyline at night, neon lights, flying vehicles, cyberpunk architecture, rain reflections",
+        "model": "qwen-image-max",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-result-sh.oss-cn-shanghai.aliyuncs.com\/7d\/65\/20260311\/d23adf3d\/6dbd43b7-ae22-41e8-9c5f-6c1e7347fca62832291556.png?Expires=1773805749&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=K6mQ1Ua%2FukPOUGxyFIUPkni4v0A%3D"
+    },
+    {
+        "prompt": "Traditional Japanese temple with cherry blossoms, peaceful garden, wooden architecture, spring season",
+        "model": "qwen-image-plus",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-result-wlcb-acdr-1.oss-cn-wulanchabu-acdr-1.aliyuncs.com\/7d\/3c\/20260311\/cfc32567\/bd2cc6c6-0104-44c9-81ee-94845280c9294072259984.png?Expires=1773805757&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=ha3sJ1fuKtKt7R4KpuQPvx4T%2Bxo%3D"
+    },
+    {
+        "prompt": "Grand European cathedral interior, ornate details, stained glass windows, dramatic lighting, architectural photography",
+        "model": "qwen-image",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-result-wlcb-acdr-1.oss-cn-wulanchabu-acdr-1.aliyuncs.com\/7d\/94\/20260311\/a7d7dcad\/cb816731-db07-4c2d-8252-da52c7383eb7904457482.png?Expires=1773805765&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=H3UjM5NMPmxzOQaT23ko64OjavY%3D"
+    },
+    {
+        "prompt": "Cozy coffee shop interior, warm lighting, wooden furniture, plants, comfortable atmosphere, hygge style",
+        "model": "wan2.6-t2i",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-a717.oss-accelerate.aliyuncs.com\/1d\/1b\/20260311\/3523ac78\/43263130-jcQDZY2m_7bc8396806f6.png?Expires=1773286378&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=2VnKhpzf2RTpIsZ2yEfeGZIab3o%3D"
+    },
+    {
+        "prompt": "Abandoned industrial warehouse, urban exploration, dramatic shadows, moody atmosphere, artistic composition",
+        "model": "qwen-image-2.0-pro",
+        "status": "success",
+        "image_url": "https:\/\/dashscope-7c2c.oss-cn-shanghai.aliyuncs.com\/7d\/4f\/20260311\/519b4a62\/b327ab5a-d0c3-4ee9-8abe-364b56a5de2e.png?Expires=1773805791&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=N8WDtMSjjfKYD8zGTUN5wbIXnIc%3D"
+    }
+]

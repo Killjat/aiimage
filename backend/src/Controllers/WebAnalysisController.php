@@ -21,7 +21,8 @@ class WebAnalysisController
         // 初始化 AI 服务
         $openRouterService = new OpenRouterService();
         $deepSeekService = new DeepSeekService();
-        $this->aiService = new AIServiceManager($openRouterService, $deepSeekService);
+        $aliBailianService = new \App\Services\AliBailianService();
+        $this->aiService = new AIServiceManager($openRouterService, $deepSeekService, $aliBailianService);
     }
     
     /**

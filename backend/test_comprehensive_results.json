@@ -1,0 +1,34 @@
+{
+    "timestamp": "2026-03-10 14:19:43",
+    "results": {
+        "sync": {
+            "wan2.6-t2i": "success",
+            "qwen-image-2.0-pro": "success",
+            "qwen-image-2.0": "success",
+            "qwen-image-max": "success",
+            "qwen-image-plus": "success",
+            "qwen-image": "success"
+        },
+        "async": {
+            "wan2.5-t2i-preview": "processing",
+            "wan2.2-t2i-flash": "processing",
+            "wanx-v1": "processing"
+        },
+        "unavailable": {
+            "stable-diffusion-v1.5": "exception_as_expected",
+            "stable-diffusion-xl": "exception_as_expected",
+            "stable-diffusion-3.5-large": "exception_as_expected",
+            "qwen-image-edit-plus": "exception_as_expected"
+        }
+    },
+    "summary": {
+        "sync_success": 6,
+        "sync_total": 6,
+        "async_success": 0,
+        "async_total": 3,
+        "unavailable_correct": 4,
+        "unavailable_total": 4,
+        "total_success": 10,
+        "total_tests": 13
+    }
+}
