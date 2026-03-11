@@ -30,8 +30,8 @@ class AliBailianService
      */
     private function getApiEndpoint(string $model): string
     {
-        // wan2.6 和 qwen-image 系列使用新的 multimodal-generation 端点
-        if ($model === 'wan2.6-t2i' || strpos($model, 'qwen-image') === 0) {
+        // 只有 qwen-image-2.0 和 qwen-image-2.0-pro 使用新的 multimodal-generation 端点
+        if ($model === 'qwen-image-2.0' || $model === 'qwen-image-2.0-pro') {
             return 'https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation';
         }
         
@@ -44,7 +44,7 @@ class AliBailianService
      */
     private function usesMultimodalEndpoint(string $model): bool
     {
-        return $model === 'wan2.6-t2i' || strpos($model, 'qwen-image') === 0;
+        return $model === 'qwen-image-2.0' || $model === 'qwen-image-2.0-pro';
     }
     
     /**
@@ -86,7 +86,7 @@ class AliBailianService
             
             // 根据模型选择合适的端点和请求格式
             if ($this->usesMultimodalEndpoint($model)) {
-                return $this->generateImageMultimodal($prompt, $model, $negativePrompt, $size, $n);
+                return $this->generateImageMultimodal($prompt, $model, $negativePrompt, $size, $n, $refImage);
             } else {
                 return $this->generateImageLegacy($prompt, $model, $negativePrompt, $style, $size, $n, $refImage, $refStrength, $refMode);
             }
@@ -105,22 +105,46 @@ class AliBailianService
         string $model,
         ?string $negativePrompt,
         string $size,
-        int $n
+        int $n,
+        ?string $refImage = null
     ): array {
         $endpoint = $this->getApiEndpoint($model);
         
+        // multimodal 端点需要 width*height 格式，保持原样
+        
         // 构建 multimodal 格式的请求
+        $content = [
+            [
+                'text' => $prompt
+            ]
+        ];
+        
+        // 如果有参考图片，添加到 content 中
+        if ($refImage) {
+            // 确保参考图片格式正确：data:image/jpeg;base64,xxx 或 data:image/png;base64,xxx
+            if (!preg_match('/^data:image\/(jpeg|jpg|png|bmp|webp);base64,/', $refImage)) {
+                // 如果没有 MIME 类型前缀，添加一个
+                if (strpos($refImage, 'data:') === 0) {
+                    // 已经有 data: 前缀但格式不对，尝试修复
+                    $refImage = preg_replace('/^data:[^;]*;base64,/', 'data:image/jpeg;base64,', $refImage);
+                } else {
+                    // 完全没有前缀，添加完整的前缀
+                    $refImage = 'data:image/jpeg;base64,' . $refImage;
+                }
+            }
+            
+            $content[] = [
+                'image' => $refImage
+            ];
+        }
+        
         $requestData = [
             'model' => $model,
             'input' => [
                 'messages' => [
                     [
                         'role' => 'user',
-                        'content' => [
-                            [
-                                'text' => $prompt
-                            ]
-                        ]
+                        'content' => $content
                     ]
                 ]
             ],
@@ -194,7 +218,9 @@ class AliBailianService
                     'success' => true,
                     'status' => 'completed',
                     'images' => $imageUrls,
-                    'message' => '图片生成成功'
+                    'message' => '图片生成成功',
+                    'original_prompt' => $prompt,
+                    'prompt_extended' => true
                 ];
             }
         }
@@ -236,12 +262,9 @@ class AliBailianService
         // 根据模型类型设置参数
         if ($model === 'wanx-v1') {
             $parameters['style'] = $style;
-        } elseif (strpos($model, 'stable-diffusion') !== false) {
-            if ($refImage) {
-                $parameters['ref_strength'] = $refStrength;
-                $parameters['ref_mode'] = $refMode;
-            }
         }
+        // 注意：wan2.6-t2i 和其他新模型不需要 ref_mode 参数
+        // API 会根据提示词自动进行图像编辑
         
         $requestData = [
             'model' => $model,
@@ -401,6 +424,66 @@ class AliBailianService
                 'sizes' => ['1280*1280', '1104*1472', '1472*1104', '960*1696', '1696*960', '768*2700'],
                 'styles' => false,
                 'max_prompt_length' => 2100
+            ],
+            'wan2.5-t2i-preview' => [
+                'name' => '万相 2.5',
+                'desc' => '高质量预览版，支持图片编辑',
+                'category' => 'text-to-image',
+                'version' => 'v2',
+                'features' => ['高质量', '图片编辑', '异步调用'],
+                'sizes' => ['1280*1280', '1104*1472', '1472*1104', '960*1696', '1696*960'],
+                'styles' => false,
+                'max_prompt_length' => 2100
+            ],
+            'wan2.2-t2i-flash' => [
+                'name' => '万相 2.2',
+                'desc' => '快速版本，支持图片编辑',
+                'category' => 'text-to-image',
+                'version' => 'v2',
+                'features' => ['快速生成', '图片编辑', '异步调用'],
+                'sizes' => ['1280*1280', '1104*1472', '1472*1104', '960*1696', '1696*960'],
+                'styles' => false,
+                'max_prompt_length' => 2100
+            ],
+            'wanx-v1' => [
+                'name' => '万相 V1',
+                'desc' => '经典版本，风格控制，支持图片编辑',
+                'category' => 'text-to-image',
+                'version' => 'v1',
+                'features' => ['风格控制', '图片编辑', '异步调用'],
+                'sizes' => ['1280*1280', '1104*1472', '1472*1104', '960*1696', '1696*960'],
+                'styles' => ['<auto>', '<photography>', '<portrait>', '<3d cartoon>', '<anime>', '<oil painting>', '<watercolor>', '<sketch>', '<chinese painting>', '<flat illustration>'],
+                'max_prompt_length' => 2100
+            ],
+            'stable-diffusion-v1.5' => [
+                'name' => 'Stable Diffusion v1.5',
+                'desc' => '开源经典模型',
+                'category' => 'text-to-image',
+                'version' => 'sd',
+                'features' => ['开源', '经典'],
+                'sizes' => ['1280*1280', '1024*1024'],
+                'styles' => false,
+                'max_prompt_length' => 1000
+            ],
+            'stable-diffusion-xl' => [
+                'name' => 'Stable Diffusion XL',
+                'desc' => '增强版本，更高质量',
+                'category' => 'text-to-image',
+                'version' => 'sd',
+                'features' => ['增强版', '高质量'],
+                'sizes' => ['1280*1280', '1024*1024'],
+                'styles' => false,
+                'max_prompt_length' => 1000
+            ],
+            'stable-diffusion-3.5-large' => [
+                'name' => 'Stable Diffusion 3.5',
+                'desc' => '最高质量版本',
+                'category' => 'text-to-image',
+                'version' => 'sd',
+                'features' => ['最高质量', '精准渲染'],
+                'sizes' => ['1280*1280', '1024*1024'],
+                'styles' => false,
+                'max_prompt_length' => 1000
             ],
             'qwen-image-2.0-pro' => [
                 'name' => '千问图像 2.0 Pro',

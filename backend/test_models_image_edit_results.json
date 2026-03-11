@@ -1,0 +1,32 @@
+{
+    "wan2.6-t2i": {
+        "status": "failed",
+        "error": "Client error: `POST https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation` resulted in a `400 Bad Request` response:\n{\"request_id\":\"f4c4cf11-9389-4d9c-8c0a-281290429ec7\",\"code\":\"InvalidParameter\",\"message\":\"For t2i model, the last messag (truncated...)\n",
+        "name": "\u4e07\u76f8 2.6"
+    },
+    "qwen-image-2.0-pro": {
+        "status": "success",
+        "url": "https://dashscope-7c2c.oss-cn-shanghai.aliyuncs.com/7d/88/20260311/7512ba7e/d8d78291-4a34-41eb-83c8-c8225705c994.png?Expires=1773832681&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=JvneyNWppxSkbO42cv6ESNO7NJ0%3D",
+        "name": "\u5343\u95ee 2.0 Pro"
+    },
+    "qwen-image-2.0": {
+        "status": "success",
+        "url": "https://dashscope-7c2c.oss-cn-shanghai.aliyuncs.com/7d/d5/20260311/5735eb57/bd5ca0bc-9aef-44f5-9ec1-642374bdd7e9.png?Expires=1773832685&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=mcn7XZ%2B6XjBwh0YZwgrm2pV3d%2B0%3D",
+        "name": "\u5343\u95ee 2.0"
+    },
+    "qwen-image-max": {
+        "status": "failed",
+        "error": "Client error: `POST https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation` resulted in a `400 Bad Request` response:\n{\"request_id\":\"82934185-9cc6-4336-82a5-5277057367ea\",\"code\":\"InvalidParameter\",\"message\":\"content parameter's length inv (truncated...)\n",
+        "name": "\u5343\u95ee Max"
+    },
+    "qwen-image-plus": {
+        "status": "failed",
+        "error": "Client error: `POST https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation` resulted in a `400 Bad Request` response:\n{\"request_id\":\"382b4f53-3b48-4156-87e0-2e50a548df74\",\"code\":\"InvalidParameter\",\"message\":\"content parameter's length inv (truncated...)\n",
+        "name": "\u5343\u95ee Plus"
+    },
+    "qwen-image": {
+        "status": "failed",
+        "error": "Client error: `POST https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation` resulted in a `400 Bad Request` response:\n{\"request_id\":\"987b849c-7b10-48f8-8a15-3dceb9729f58\",\"code\":\"InvalidParameter\",\"message\":\"content parameter's length inv (truncated...)\n",
+        "name": "\u5343\u95ee\u56fe\u50cf"
+    }
+}

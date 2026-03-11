@@ -271,6 +271,77 @@ class ImageController
     }
 
     /**
+     * 保存图片到图片库
+     * POST /api/gallery/save
+     */
+    public function saveImage(Request $request, Response $response): Response
+    {
+        try {
+            $identifier = $this->getIdentifier($request);
+            $isGuest = $identifier['type'] === 'guest';
+            $id = $identifier['id'];
+            
+            if ($isGuest) {
+                $response->getBody()->write(json_encode([
+                    'success' => false,
+                    'error' => '游客无法保存图片到图片库'
+                ]));
+                return $response->withStatus(403)->withHeader('Content-Type', 'application/json');
+            }
+            
+            $data = json_decode($request->getBody()->getContents(), true);
+            
+            if (empty($data['imageUrl'])) {
+                $response->getBody()->write(json_encode([
+                    'success' => false,
+                    'error' => '缺少图片URL'
+                ]));
+                return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+            }
+            
+            try {
+                $user = $this->authService->getUserById($id);
+                $username = $user['username'] ?? 'Unknown';
+                
+                $this->galleryService->saveImage(
+                    userId: $id,
+                    username: $username,
+                    model: $data['model'] ?? 'unknown',
+                    prompt: $data['prompt'] ?? '',
+                    imageUrl: $data['imageUrl'],
+                    llmModel: null,
+                    negativePrompt: $data['negativePrompt'] ?? null,
+                    imageSize: $data['size'] ?? null,
+                    imageQuality: null,
+                    isPublic: false,
+                    tags: null
+                );
+                
+                $response->getBody()->write(json_encode([
+                    'success' => true,
+                    'message' => '图片已保存到图片库'
+                ]));
+                
+            } catch (\Exception $e) {
+                error_log('Failed to save image to gallery: ' . $e->getMessage());
+                throw $e;
+            }
+            
+            return $response->withHeader('Content-Type', 'application/json');
+            
+        } catch (\Exception $e) {
+            error_log('保存图片到图片库错误: ' . $e->getMessage());
+            
+            $response->getBody()->write(json_encode([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]));
+
+            return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
+        }
+    }
+
+    /**
      * 获取用户配额信息
      * GET /api/image/quota
      */
@@ -389,6 +460,14 @@ class ImageController
             $refStrength = $data['ref_strength'] ?? 1.0;
             $refMode = $data['ref_mode'] ?? 'repaint';
             
+            // 调试：记录参考图片信息
+            if ($refImage) {
+                error_log('📸 后端接收到参考图片:');
+                error_log('  大小: ' . strlen($refImage) . ' 字符');
+                error_log('  前缀: ' . substr($refImage, 0, 50));
+                error_log('  是否为 data URL: ' . (strpos($refImage, 'data:') === 0 ? 'yes' : 'no'));
+            }
+            
             // 验证 prompt 长度
             if (strlen($prompt) < 3) {
                 $response->getBody()->write(json_encode([
@@ -444,6 +523,25 @@ class ImageController
                                 null,
                                 'completed'
                             );
+                            
+                            // 保存到图片库
+                            try {
+                                $this->galleryService->saveImage(
+                                    $id,
+                                    '', // username will be fetched from DB if needed
+                                    'alibaba/' . $model,
+                                    $prompt,
+                                    $result['images'][0],
+                                    null,
+                                    $negativePrompt,
+                                    $size,
+                                    null,
+                                    false // 默认为私有（用户自己的图片）
+                                );
+                            } catch (\Exception $e) {
+                                error_log('Failed to save image to gallery: ' . $e->getMessage());
+                                // 不中断流程，继续返回图片
+                            }
                         }
 
                         $response->getBody()->write(json_encode([
@@ -451,6 +549,8 @@ class ImageController
                             'status' => 'completed',
                             'images' => $result['images'],
                             'message' => $result['message'],
+                            'original_prompt' => $prompt,
+                            'prompt_extended' => $result['prompt_extended'] ?? false,
                             'quota' => $quota
                         ]));
                     } else {

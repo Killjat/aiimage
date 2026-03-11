@@ -1,0 +1,22 @@
+{
+    "wan2.6-t2i": {
+        "status": "failed",
+        "error": "Client error: `POST https://dashscope.aliyuncs.com/api/v1/services/aigc/text2image/image-synthesis` resulted in a `400 Bad Request` response:\n{\"request_id\":\"ffec8b6c-2c1d-4c01-bc3d-97c8f8f6010e\",\"code\":\"InvalidParameter\",\"message\":\"url error, please check url\uff01 (truncated...)\n",
+        "name": "\u4e07\u76f8 2.6"
+    },
+    "wan2.5-t2i-preview": {
+        "status": "success",
+        "task_id": "c2bea446-318d-4a51-8dce-ee2717cb0837",
+        "name": "\u4e07\u76f8 2.5"
+    },
+    "wan2.2-t2i-flash": {
+        "status": "success",
+        "task_id": "7f2e5d78-bb1c-49f4-b1af-239b2ad5e196",
+        "name": "\u4e07\u76f8 2.2"
+    },
+    "wanx-v1": {
+        "status": "success",
+        "task_id": "31a5ed2a-f59e-4abe-80db-6bcd6deca5dd",
+        "name": "\u4e07\u76f8 V1"
+    }
+}

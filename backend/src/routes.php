@@ -51,6 +51,7 @@ $app->group('/api/image', function (RouteCollectorProxy $group) {
     $group->get('/models', [$imageController, 'getImageModels']);
     $group->get('/quota', [$imageController, 'getQuota']);
     $group->get('/history', [$imageController, 'getHistory']);
+    $group->post('/save', [$imageController, 'saveImage']);
 });
 
 // Website analysis routes

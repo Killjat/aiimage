@@ -107,6 +107,15 @@ class QuotaService
      */
     public function hasImageQuota(int $userId): bool
     {
+        // 检查是否是无限制用户
+        $stmt = $this->db->prepare('SELECT image_quota_unlimited FROM users WHERE id = ?');
+        $stmt->execute([$userId]);
+        $user = $stmt->fetch();
+        
+        if ($user && $user['image_quota_unlimited']) {
+            return true; // 无限制用户总是有配额
+        }
+        
         $quota = $this->getImageQuota($userId);
         return $quota['remaining'] > 0;
     }
@@ -120,7 +129,7 @@ class QuotaService
     public function getImageQuota(int $userId): array
     {
         $stmt = $this->db->prepare(
-            'SELECT image_quota, image_used FROM users WHERE id = ?'
+            'SELECT image_quota, image_used, image_quota_unlimited FROM users WHERE id = ?'
         );
         $stmt->execute([$userId]);
         $user = $stmt->fetch();
@@ -130,6 +139,15 @@ class QuotaService
                 'total' => 0,
                 'used' => 0,
                 'remaining' => 0,
+            ];
+        }
+
+        // 如果是无限制用户，返回特殊值
+        if ($user['image_quota_unlimited']) {
+            return [
+                'total' => 999999,
+                'used' => (int)$user['image_used'],
+                'remaining' => 999999,
             ];
         }
 
@@ -152,6 +170,18 @@ class QuotaService
      */
     public function useImageQuota(int $userId): bool
     {
+        // 检查是否是无限制用户
+        $stmt = $this->db->prepare('SELECT image_quota_unlimited FROM users WHERE id = ?');
+        $stmt->execute([$userId]);
+        $user = $stmt->fetch();
+        
+        if ($user && $user['image_quota_unlimited']) {
+            // 无限制用户仍然记录使用次数，但不检查配额
+            $stmt = $this->db->prepare('UPDATE users SET image_used = image_used + 1 WHERE id = ?');
+            $stmt->execute([$userId]);
+            return true;
+        }
+
         if (!$this->hasImageQuota($userId)) {
             throw new \Exception('图片生成配额已用完');
         }

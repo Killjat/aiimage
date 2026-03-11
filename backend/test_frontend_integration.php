@@ -1,177 +1,130 @@
 <?php
 /**
- * 前端集成测试 - 模拟前端请求
+ * Test frontend integration with image editing
+ * Simulates what the frontend would send
  */
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$dotenv = \Dotenv\Dotenv::createImmutable(__DIR__);
+use GuzzleHttp\Client;
+
+// Load environment variables
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-use App\Services\AliBailianService;
-use App\Services\OpenRouterService;
-use App\Services\DeepSeekService;
-use App\Services\AIServiceManager;
+$apiKey = $_ENV['ALIBABA_BAILIAN_API_KEY'] ?? '';
 
-$aliBailianService = new AliBailianService();
-$openRouterService = new OpenRouterService();
-$deepSeekService = new DeepSeekService();
-$aiServiceManager = new AIServiceManager($openRouterService, $deepSeekService, $aliBailianService);
+if (empty($apiKey)) {
+    die("❌ ALIBABA_BAILIAN_API_KEY not configured\n");
+}
 
-$prompt = 'A beautiful sunset over mountains, oil painting style';
+echo "🧪 Testing Frontend Integration with Image Editing\n";
+echo "=" . str_repeat("=", 70) . "\n\n";
 
-// 模拟前端请求的模型
-$frontend_models = [
-    // 阿里模型
-    'alibaba-wan2.6-t2i',
-    'alibaba-qwen-image-2.0-pro',
-    'alibaba-qwen-image-2.0',
-    'alibaba-qwen-image-max',
-    'alibaba-qwen-image-plus',
-    'alibaba-qwen-image',
-    // OpenRouter Flux 模型
-    'black-forest-labs/flux.2-pro',
-    'black-forest-labs/flux.2-flex',
+// Create a test image
+echo "📸 Creating test image...\n";
+$image = imagecreatetruecolor(400, 300);
+$white = imagecolorallocate($image, 255, 255, 255);
+$black = imagecolorallocate($image, 0, 0, 0);
+imagefill($image, 0, 0, $white);
+imagefilledellipse($image, 200, 150, 100, 100, $black);
+
+ob_start();
+imagejpeg($image);
+$imageData = ob_get_clean();
+
+$base64Image = 'data:image/jpeg;base64,' . base64_encode($imageData);
+echo "✅ Test image created\n\n";
+
+// Test 1: qwen-image-2.0 with image editing
+echo "🧪 Test 1: qwen-image-2.0 with image editing\n";
+echo "   Simulating frontend request...\n";
+
+$client = new Client();
+
+$requestBody = [
+    'prompt' => 'Change the background to blue',
+    'model' => 'qwen-image-2.0',
+    'ref_image' => $base64Image,
+    'size' => '1024*1024'
 ];
 
-echo "=== 前端集成测试 ===\n\n";
-echo "模拟前端请求到后端 API\n\n";
+echo "   Request body size: " . strlen(json_encode($requestBody)) . " bytes\n";
 
-$results = [];
+try {
+    $response = $client->post(
+        'http://127.0.0.1:8080/api/image/generate/bailian',
+        [
+            'json' => $requestBody,
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ],
+            'timeout' => 60
+        ]
+    );
 
-foreach ($frontend_models as $model) {
-    echo "测试模型: {$model}\n";
-    
-    try {
-        // 判断是否是阿里模型
-        $isAlibaba = strpos($model, 'alibaba-') === 0;
-        
-        if ($isAlibaba) {
-            // 模拟前端调用 /api/image/generate/bailian
-            $alibabaModel = substr($model, 8); // 移除 'alibaba-' 前缀
-            
-            $result = $aliBailianService->generateImage(
-                $prompt,
-                $alibabaModel,
-                null,
-                '<auto>',
-                '1024*1024',
-                1
-            );
-            
-            if ($result['success']) {
-                if (isset($result['images']) && !empty($result['images'])) {
-                    // 模拟后端返回的 JSON 响应
-                    $response = [
-                        'success' => true,
-                        'image_url' => $result['images'][0],
-                        'model' => $model,
-                        'prompt' => $prompt,
-                        'quota' => [
-                            'total' => 10,
-                            'used' => 1,
-                            'remaining' => 9
-                        ]
-                    ];
-                    
-                    echo "✅ 成功\n";
-                    echo "   响应大小: " . strlen(json_encode($response)) . " 字节\n";
-                    echo "   image_url 类型: HTTP URL\n";
-                    echo "   可以直接显示: ✓\n";
-                    echo "   可以直接下载: ✓\n";
-                    
-                    $results[$model] = [
-                        'status' => 'success',
-                        'response_size' => strlen(json_encode($response)),
-                        'image_type' => 'http_url'
-                    ];
-                } else {
-                    echo "❌ 失败 - 无效响应\n";
-                    $results[$model] = ['status' => 'failed'];
-                }
-            } else {
-                echo "❌ 失败 - " . ($result['message'] ?? '未知错误') . "\n";
-                $results[$model] = ['status' => 'failed'];
-            }
-        } else {
-            // 模拟前端调用 /api/image/generate (Flux 模型)
-            $result = $aiServiceManager->generateImage($model, $prompt);
-            
-            if (isset($result['image_url'])) {
-                // 模拟后端返回的 JSON 响应
-                $response = [
-                    'success' => true,
-                    'image_url' => $result['image_url'],
-                    'model' => $result['model'],
-                    'prompt' => $result['prompt'],
-                    'quota' => [
-                        'total' => 10,
-                        'used' => 1,
-                        'remaining' => 9
-                    ]
-                ];
-                
-                $response_size = strlen(json_encode($response));
-                $image_type = strpos($result['image_url'], 'data:') === 0 ? 'base64' : 'http_url';
-                
-                echo "✅ 成功\n";
-                echo "   响应大小: " . number_format($response_size) . " 字节\n";
-                echo "   image_url 类型: {$image_type}\n";
-                echo "   可以直接显示: ✓\n";
-                echo "   可以直接下载: ✓ (需要 Base64 转 Blob)\n";
-                
-                $results[$model] = [
-                    'status' => 'success',
-                    'response_size' => $response_size,
-                    'image_type' => $image_type
-                ];
-            } else {
-                echo "❌ 失败 - 无效响应\n";
-                $results[$model] = ['status' => 'failed'];
-            }
+    $body = $response->getBody()->getContents();
+    $data = json_decode($body, true);
+
+    if ($data['success']) {
+        echo "   ✅ Success!\n";
+        echo "   Status: " . ($data['status'] ?? 'unknown') . "\n";
+        if (isset($data['images'])) {
+            echo "   Images: " . count($data['images']) . "\n";
+            echo "   Image URL: " . substr($data['images'][0], 0, 80) . "...\n";
         }
-    } catch (\Exception $e) {
-        echo "❌ 错误 - " . $e->getMessage() . "\n";
-        $results[$model] = ['status' => 'error'];
-    }
-    
-    echo "\n";
-}
-
-echo "=== 集成测试结果 ===\n\n";
-
-$success_count = 0;
-$failed_count = 0;
-
-foreach ($results as $model => $result) {
-    if ($result['status'] === 'success') {
-        $success_count++;
-        echo "✅ {$model}\n";
-        echo "   响应大小: " . number_format($result['response_size']) . " 字节\n";
-        echo "   图像类型: {$result['image_type']}\n";
+        if (isset($data['prompt_extended'])) {
+            echo "   Prompt extended: " . ($data['prompt_extended'] ? 'yes' : 'no') . "\n";
+        }
     } else {
-        $failed_count++;
-        echo "❌ {$model}\n";
+        echo "   ❌ Failed: " . ($data['error'] ?? 'unknown error') . "\n";
     }
+
+} catch (\Exception $e) {
+    echo "   ❌ Exception: " . $e->getMessage() . "\n";
 }
 
-echo "\n统计:\n";
-echo "  成功: {$success_count}\n";
-echo "  失败: {$failed_count}\n";
-echo "  总计: " . count($frontend_models) . "\n";
+echo "\n";
 
-echo "\n✅ 前端集成测试完成\n";
-echo "所有模型都可以通过前端正确调用和显示\n";
+// Test 2: wan2.5-t2i-preview with image editing
+echo "🧪 Test 2: wan2.5-t2i-preview with image editing\n";
+echo "   Simulating frontend request...\n";
 
-// 保存结果
-file_put_contents(__DIR__ . '/test_frontend_integration_results.json', json_encode([
-    'timestamp' => date('Y-m-d H:i:s'),
-    'results' => $results,
-    'summary' => [
-        'success' => $success_count,
-        'failed' => $failed_count,
-        'total' => count($frontend_models)
-    ]
-], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+$requestBody = [
+    'prompt' => 'Change the background to blue',
+    'model' => 'wan2.5-t2i-preview',
+    'ref_image' => $base64Image,
+    'size' => '1024*1024'
+];
 
-echo "\n详细结果已保存到: backend/test_frontend_integration_results.json\n";
+try {
+    $response = $client->post(
+        'http://127.0.0.1:8080/api/image/generate/bailian',
+        [
+            'json' => $requestBody,
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ],
+            'timeout' => 60
+        ]
+    );
+
+    $body = $response->getBody()->getContents();
+    $data = json_decode($body, true);
+
+    if ($data['success']) {
+        echo "   ✅ Success!\n";
+        echo "   Status: " . ($data['status'] ?? 'unknown') . "\n";
+        if (isset($data['task_id'])) {
+            echo "   Task ID: " . substr($data['task_id'], 0, 20) . "...\n";
+        }
+    } else {
+        echo "   ❌ Failed: " . ($data['error'] ?? 'unknown error') . "\n";
+    }
+
+} catch (\Exception $e) {
+    echo "   ❌ Exception: " . $e->getMessage() . "\n";
+}
+
+echo "\n" . str_repeat("=", 70) . "\n";
+echo "✅ Integration test completed\n";

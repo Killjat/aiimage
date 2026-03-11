@@ -1,0 +1,16 @@
+{
+    "black-forest-labs/flux.2-pro": {
+        "status": "failed",
+        "name": "Flux 2 Pro",
+        "text_to_image": true,
+        "image_editing": false,
+        "error": "Client error: `POST https://openrouter.ai/api/v1/chat/completions` resulted in a `401 Unauthorized` response:\n{\"error\":{\"message\":\"User not found.\",\"code\":401}}\n"
+    },
+    "black-forest-labs/flux.2-flex": {
+        "status": "failed",
+        "name": "Flux 2 Flex",
+        "text_to_image": true,
+        "image_editing": false,
+        "error": "Client error: `POST https://openrouter.ai/api/v1/chat/completions` resulted in a `401 Unauthorized` response:\n{\"error\":{\"message\":\"User not found.\",\"code\":401}}\n"
+    }
+}
