@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import ImageGeneratorNew from './components/ImageGeneratorNew';
 import ClawHubNews from './components/ClawHubNews';
 import SmartAnalysis from './components/SmartAnalysis';
+import ImageGallery from './components/ImageGallery';
 import './App.mobile.css';
 
 // 从环境变量读取 API URL，生产环境必须配置
@@ -29,8 +30,11 @@ function App({ isAuthenticated, onLogout, onShowLogin }: AppProps) {
     return localStorage.getItem('selected_model') || 'auto';
   });
   const [backendOnline, setBackendOnline] = useState(false);
-  const [currentView, setCurrentView] = useState<'home' | 'chat' | 'image' | 'analysis'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'chat' | 'image' | 'analysis' | 'gallery'>('home');
   const [showSettings, setShowSettings] = useState(false);
+  const [generatorPrompt, setGeneratorPrompt] = useState('');
+  const [generatorModel, setGeneratorModel] = useState('');
+  const [generatorImage, setGeneratorImage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // 保存消息到 localStorage
@@ -240,6 +244,26 @@ function App({ isAuthenticated, onLogout, onShowLogin }: AppProps) {
             }}
           >
             🔍 智能分析
+          </button>
+          
+          <button
+            onClick={() => setCurrentView('gallery')}
+            style={{
+              padding: '8px 16px',
+              background: currentView === 'gallery' ? '#e8f0fe' : 'transparent',
+              color: currentView === 'gallery' ? '#1a73e8' : '#5f6368',
+              border: '1px solid #dadce0',
+              borderRadius: '20px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 500,
+              transition: 'all 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            🖼️ 图片库
           </button>
           
           <div style={{ width: '1px', height: '24px', background: '#dadce0', margin: '0 4px' }} />
@@ -697,6 +721,14 @@ function App({ isAuthenticated, onLogout, onShowLogin }: AppProps) {
             onClose={() => setCurrentView('home')}
             isAuthenticated={isAuthenticated}
             onShowLogin={onShowLogin}
+            initialPrompt={generatorPrompt}
+            initialModel={generatorModel}
+            initialImage={generatorImage}
+            onInitialDataUsed={() => {
+              setGeneratorPrompt('');
+              setGeneratorModel('');
+              setGeneratorImage('');
+            }}
           />
         </div>
       )}
@@ -705,6 +737,21 @@ function App({ isAuthenticated, onLogout, onShowLogin }: AppProps) {
       {currentView === 'analysis' && (
         <div style={{ height: 'calc(100vh - 60px)', overflow: 'auto' }}>
           <SmartAnalysis />
+        </div>
+      )}
+      
+      {currentView === 'gallery' && (
+        <div style={{ height: 'calc(100vh - 60px)', overflow: 'auto' }}>
+          <ImageGallery 
+            isAuthenticated={isAuthenticated}
+            userId={user?.id}
+            onGenerateAgain={(prompt, model, imageUrl) => {
+              setGeneratorPrompt(prompt);
+              setGeneratorModel(model);
+              setGeneratorImage(imageUrl);
+              setCurrentView('image');
+            }}
+          />
         </div>
       )}
     </div>

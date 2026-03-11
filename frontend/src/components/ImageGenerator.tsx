@@ -8,22 +8,52 @@ interface ImageGeneratorProps {
   onShowLogin?: () => void;
 }
 
-const IMAGE_MODELS = [
-  { id: 'google/gemini-3.1-flash-image-preview', name: 'Nano Banana 2', badge: '推荐' },
-  { id: 'google/gemini-2.5-flash-image-preview', name: 'Nano Banana', badge: '快速' },
-  { id: 'black-forest-labs/flux.2-pro', name: 'Flux 2 Pro', badge: '专业' },
-  { id: 'black-forest-labs/flux.2-flex', name: 'Flux 2 Flex', badge: '灵活' },
+const DEFAULT_IMAGE_MODELS = [
+  // 阿里模型
+  { id: 'alibaba-wan2.6-t2i', name: '万相 2.6', badge: '最新', provider: 'alibaba' },
+  { id: 'alibaba-qwen-image-2.0-pro', name: '千问 2.0 Pro', badge: '最强', provider: 'alibaba' },
+  { id: 'alibaba-qwen-image-2.0', name: '千问 2.0', badge: '平衡', provider: 'alibaba' },
+  { id: 'alibaba-qwen-image-max', name: '千问 Max', badge: '质量', provider: 'alibaba' },
+  { id: 'alibaba-qwen-image-plus', name: '千问 Plus', badge: '高质', provider: 'alibaba' },
+  { id: 'alibaba-qwen-image', name: '千问图像', badge: '经典', provider: 'alibaba' },
+  // OpenRouter Flux 模型
+  { id: 'black-forest-labs/flux.2-pro', name: 'Flux 2 Pro', badge: '推荐', provider: 'openrouter' },
+  { id: 'black-forest-labs/flux.2-flex', name: 'Flux 2 Flex', badge: '快速', provider: 'openrouter' },
 ];
 
 function ImageGenerator({ onClose, isAuthenticated, onShowLogin }: ImageGeneratorProps) {
   const [prompt, setPrompt] = useState('');
-  const [selectedModel, setSelectedModel] = useState(IMAGE_MODELS[0].id);
+  const [imageModels, setImageModels] = useState(DEFAULT_IMAGE_MODELS);
+  const [selectedModel, setSelectedModel] = useState(DEFAULT_IMAGE_MODELS[0].id);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [quota, setQuota] = useState<{ total: number; used: number; remaining: number } | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // 加载图片生成模型列表
+  const loadImageModels = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/image/models`);
+      const data = await response.json();
+      if (data.success && data.models && data.models.length > 0) {
+        const models = data.models.map((m: any) => ({
+          id: m.id,
+          name: m.name || m.id,
+          badge: m.provider === 'alibaba' ? '阿里' : m.badge || '推荐',
+          provider: m.provider
+        }));
+        setImageModels(models);
+        setSelectedModel(models[0].id);
+      }
+    } catch (err) {
+      console.error('Failed to load image models:', err);
+      // 使用默认模型
+      setImageModels(DEFAULT_IMAGE_MODELS);
+      setSelectedModel(DEFAULT_IMAGE_MODELS[0].id);
+    }
+  };
 
   const loadQuota = async () => {
     try {
@@ -44,6 +74,7 @@ function ImageGenerator({ onClose, isAuthenticated, onShowLogin }: ImageGenerato
   };
 
   useEffect(() => {
+    loadImageModels();
     loadQuota();
   }, []);
 
@@ -103,27 +134,55 @@ function ImageGenerator({ onClose, isAuthenticated, onShowLogin }: ImageGenerato
         headers['Authorization'] = `Bearer ${token}`;
       }
       
-      const requestBody: any = { 
-        prompt: prompt.trim(), 
-        model: selectedModel 
-      };
+      const currentModel = imageModels.find(m => m.id === selectedModel);
+      const isAlibaba = currentModel?.provider === 'alibaba';
       
-      if (uploadedImage) {
-        requestBody.base_image = uploadedImage;
-      }
+      if (isAlibaba) {
+        // 调用阿里百练 API
+        const alibabaModel = selectedModel.replace('alibaba-', '');
+        const requestBody: any = {
+          prompt: prompt.trim(),
+          model: alibabaModel,
+          size: '1024*1024'
+        };
 
-      const response = await fetch(`${API_BASE_URL}/image/generate`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(requestBody)
-      });
+        const response = await fetch(`${API_BASE_URL}/image/generate/bailian`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(requestBody)
+        });
 
-      const data = await response.json();
-      if (data.success && data.image_url) {
-        setImageUrl(data.image_url);
-        loadQuota();
+        const data = await response.json();
+        if (data.success && data.images && data.images.length > 0) {
+          setImageUrl(data.images[0]);
+          loadQuota();
+        } else {
+          setError(data.error || '图片生成失败');
+        }
       } else {
-        setError(data.error || '图片生成失败');
+        // 调用 OpenRouter API（Flux 模型）
+        const requestBody: any = { 
+          prompt: prompt.trim(), 
+          model: selectedModel 
+        };
+        
+        if (uploadedImage) {
+          requestBody.base_image = uploadedImage;
+        }
+
+        const response = await fetch(`${API_BASE_URL}/image/generate`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(requestBody)
+        });
+
+        const data = await response.json();
+        if (data.success && data.image_url) {
+          setImageUrl(data.image_url);
+          loadQuota();
+        } else {
+          setError(data.error || '图片生成失败');
+        }
       }
     } catch (err: any) {
       setError('网络错误: ' + err.message);
@@ -134,12 +193,39 @@ function ImageGenerator({ onClose, isAuthenticated, onShowLogin }: ImageGenerato
 
   const downloadImage = () => {
     if (!imageUrl) return;
-    const a = document.createElement('a');
-    a.href = imageUrl;
-    a.download = `ai-image-${Date.now()}.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    
+    // 处理 base64 data URL
+    if (imageUrl.startsWith('data:')) {
+      // 将 base64 转换为 Blob
+      const arr = imageUrl.split(',');
+      const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/png';
+      const bstr = atob(arr[1]);
+      const n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      for (let i = 0; i < n; i++) {
+        u8arr[i] = bstr.charCodeAt(i);
+      }
+      const blob = new Blob([u8arr], { type: mime });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ai-image-${Date.now()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      // 释放 URL
+      URL.revokeObjectURL(url);
+    } else {
+      // 处理 HTTP URL
+      const a = document.createElement('a');
+      a.href = imageUrl;
+      a.download = `ai-image-${Date.now()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
   };
 
   return (
@@ -278,7 +364,7 @@ function ImageGenerator({ onClose, isAuthenticated, onShowLogin }: ImageGenerato
               disabled={loading} 
               style={{ width: '100%', padding: '8px', border: '2px solid #e0e0e0', borderRadius: '6px', fontSize: '12px', background: '#fff', cursor: 'pointer', outline: 'none' }}
             >
-              {IMAGE_MODELS.map(m => <option key={m.id} value={m.id}>{m.name} [{m.badge}]</option>)}
+              {imageModels.map(m => <option key={m.id} value={m.id}>{m.name} [{m.badge}]</option>)}
             </select>
           </div>
 

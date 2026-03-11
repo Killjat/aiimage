@@ -1,0 +1,124 @@
+╔════════════════════════════════════════════════════════════════╗
+║              图片库功能 - 完成                                 ║
+╚════════════════════════════════════════════════════════════════╝
+
+📊 数据库表: image_gallery
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✅ 17 个字段
+  ✅ 10 个索引
+  ✅ 全文搜索支持
+
+📋 核心字段
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  • id                - 主键
+  • user_id           - 创建者ID
+  • username          - 创建者用户名
+  • model             - 图片生成模型 ✨
+  • llm_model         - 使用的大模型 ✨
+  • prompt            - 提示词
+  • negative_prompt   - 反向提示词
+  • image_url         - 图片数据 (Base64/URL)
+  • image_size        - 图片尺寸
+  • image_quality     - 图片质量
+  • is_public         - 是否公开
+  • views             - 浏览次数
+  • likes             - 点赞数
+  • description       - 图片描述
+  • tags              - 标签
+  • created_at        - 创建时间
+  • updated_at        - 更新时间
+
+🔍 索引
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ PRIMARY (id)
+  ✓ idx_user_id (用户查询)
+  ✓ idx_created_at (时间排序)
+  ✓ idx_is_public (公开筛选)
+  ✓ idx_views (热门排序)
+  ✓ idx_likes (点赞排序)
+  ✓ idx_model (模型筛选)
+  ✓ idx_llm_model (大模型筛选) ✨
+  ✓ ft_prompt (全文搜索)
+  ✓ ft_tags (标签搜索)
+
+🛠️ 后端服务
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✅ ImageGalleryService
+     • saveImage() - 保存图片
+     • getPublicGallery() - 获取公开图片库
+     • getUserGallery() - 获取用户图片库
+     • getImage() - 获取单个图片
+     • searchImages() - 搜索图片
+     • incrementViews() - 增加浏览
+     • incrementLikes() - 增加点赞
+     • getModelStats() - 模型统计
+     • getLLMStats() - 大模型统计 ✨
+     • deleteImage() - 删除图片
+     • updateImage() - 更新图片
+
+🎮 API 端点
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  GET  /api/gallery/public              - 公开图片库
+  GET  /api/gallery/user/:userId        - 用户图片库
+  GET  /api/gallery/image/:imageId      - 图片详情
+  GET  /api/gallery/search              - 搜索图片
+  POST /api/gallery/image/:imageId/like - 点赞
+  GET  /api/gallery/stats/models        - 模型统计
+  GET  /api/gallery/stats/llm           - 大模型统计 ✨
+
+💾 保存图片示例
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  $galleryService->saveImage(
+    userId: 1,
+    username: 'user123',
+    model: 'alibaba-wan2.6-t2i',
+    llmModel: 'gpt-4',              // 新增
+    prompt: 'A beautiful sunset',
+    imageUrl: 'data:image/png;...',
+    imageSize: '1024*1024',
+    imageQuality: 'high',
+    isPublic: true,
+    tags: 'sunset,nature'
+  );
+
+📈 统计功能
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  模型统计:
+    • 每个模型的使用次数
+    • 每个模型的用户数
+
+  大模型统计: ✨
+    • 每个大模型的使用次数
+    • 每个大模型的用户数
+
+🔐 权限控制
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ 用户只能删除/编辑自己的图片
+  ✓ 公开图片任何人可以查看
+  ✓ 支持私密图片
+
+🚀 迁移脚本
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  php backend/migrate_add_image_gallery.php
+
+✅ 状态
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  数据库表: ✅ 已创建
+  Service: ✅ 已实现
+  Controller: ✅ 已实现
+  API: ✅ 已定义
+  文档: ✅ 已完成
+
+📚 文档
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  IMAGE_GALLERY_GUIDE.md - 完整功能指南
+
+✨ 新增功能
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  • llm_model 字段 - 记录使用的大模型
+  • idx_llm_model 索引 - 按大模型筛选
+  • getLLMStats() - 大模型统计
+
+╔════════════════════════════════════════════════════════════════╗
+║                    准备就绪 ✅                                 ║
+╚════════════════════════════════════════════════════════════════╝

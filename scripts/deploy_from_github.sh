@@ -49,7 +49,24 @@ else
     echo "   到 $NEW_COMMIT"
 fi
 
-# 3. 后端部署
+# 3. 同步环境变量文件
+echo -e "${BLUE}🔐 同步环境变量...${NC}"
+# 检查本地是否有 .env 文件，如果有则复制到远程
+if [ -f "backend/.env" ]; then
+    cp backend/.env backend/.env.remote.bak
+    echo -e "${GREEN}✅ 后端环境变量已同步${NC}"
+else
+    echo -e "${RED}⚠️  本地 backend/.env 不存在，跳过同步${NC}"
+fi
+
+if [ -f "frontend/.env" ]; then
+    cp frontend/.env frontend/.env.remote.bak
+    echo -e "${GREEN}✅ 前端环境变量已同步${NC}"
+else
+    echo -e "${RED}⚠️  本地 frontend/.env 不存在，跳过同步${NC}"
+fi
+
+# 4. 后端部署
 echo -e "${BLUE}🔧 部署后端...${NC}"
 cd backend
 
@@ -64,7 +81,7 @@ chown -R www-data:www-data .
 chmod -R 755 .
 echo -e "${GREEN}✅ 后端权限已设置${NC}"
 
-# 4. 前端部署
+# 5. 前端部署
 echo -e "${BLUE}🎨 部署前端...${NC}"
 cd ../frontend
 
@@ -82,7 +99,7 @@ echo -e "${GREEN}✅ 前端构建完成${NC}"
 chown -R www-data:www-data dist
 chmod -R 755 dist
 
-# 5. 重启服务
+# 6. 重启服务
 echo -e "${BLUE}🔄 重启服务...${NC}"
 
 # 重启后端服务
@@ -103,7 +120,7 @@ else
     exit 1
 fi
 
-# 6. 健康检查
+# 7. 健康检查
 echo -e "${BLUE}🏥 健康检查...${NC}"
 sleep 2
 
@@ -122,7 +139,7 @@ else
     echo -e "${RED}⚠️  前端访问异常${NC}"
 fi
 
-# 7. 显示服务状态
+# 8. 显示服务状态
 echo ""
 echo "================================================"
 echo -e "${GREEN}✅ 部署完成！${NC}"

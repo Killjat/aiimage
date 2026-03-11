@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { StorageService } from '../services/StorageService';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -6,11 +7,34 @@ interface ImageGeneratorProps {
   onClose: () => void;
   isAuthenticated: boolean;
   onShowLogin?: () => void;
+  initialPrompt?: string;
+  initialModel?: string;
+  initialImage?: string;
+  onInitialDataUsed?: () => void;
 }
 
 const IMAGE_MODELS = [
-  { id: 'black-forest-labs/flux.2-pro', name: 'Flux 2 Pro', desc: '专业级质量', badge: '推荐' },
-  { id: 'black-forest-labs/flux.2-flex', name: 'Flux 2 Flex', desc: '快速灵活', badge: '快速' },
+  // 万相系列
+  { id: 'alibaba/wan2.6-t2i', name: '万相 2.6', desc: '最新超高质量', badge: '最新', provider: 'bailian', supportsImageEdit: false },
+  { id: 'alibaba/wan2.5-t2i-preview', name: '万相 2.5', desc: '高质量预览', badge: '推荐', provider: 'bailian', supportsImageEdit: true },
+  { id: 'alibaba/wan2.2-t2i-flash', name: '万相 2.2', desc: '快速版本', badge: '快速', provider: 'bailian', supportsImageEdit: true },
+  { id: 'alibaba/wanx-v1', name: '万相 V1', desc: '风格控制', badge: '经典', provider: 'bailian', supportsImageEdit: true },
+  
+  // Stable Diffusion 系列
+  { id: 'alibaba/stable-diffusion-v1.5', name: 'SD v1.5', desc: '开源经典', badge: '稳定', provider: 'bailian', supportsImageEdit: false },
+  { id: 'alibaba/stable-diffusion-xl', name: 'SD XL', desc: '增强版', badge: '高质', provider: 'bailian', supportsImageEdit: false },
+  { id: 'alibaba/stable-diffusion-3.5-large', name: 'SD 3.5', desc: '最高质量', badge: '精准', provider: 'bailian', supportsImageEdit: false },
+  
+  // 千问图像系列 - 仅 2.0 系列支持图片编辑
+  { id: 'alibaba/qwen-image-2.0-pro', name: '千问 2.0 Pro', desc: '满血版最强', badge: '最强', provider: 'bailian', supportsImageEdit: true },
+  { id: 'alibaba/qwen-image-2.0', name: '千问 2.0', desc: '加速版平衡', badge: '平衡', provider: 'bailian', supportsImageEdit: true },
+  { id: 'alibaba/qwen-image-max', name: '千问 Max', desc: '最高质量', badge: '质量', provider: 'bailian', supportsImageEdit: false },
+  { id: 'alibaba/qwen-image-plus', name: '千问 Plus', desc: '高质量版', badge: '高质', provider: 'bailian', supportsImageEdit: false },
+  { id: 'alibaba/qwen-image', name: '千问图像', desc: '首代模型', badge: '经典', provider: 'bailian', supportsImageEdit: false },
+  
+  // OpenRouter 系列
+  { id: 'black-forest-labs/flux.2-pro', name: 'Flux 2 Pro', desc: '专业级质量', badge: '推荐', provider: 'openrouter', supportsImageEdit: false },
+  { id: 'black-forest-labs/flux.2-flex', name: 'Flux 2 Flex', desc: '快速灵活', badge: '快速', provider: 'openrouter', supportsImageEdit: false },
 ];
 
 const IMAGE_SIZES = [
@@ -21,17 +45,69 @@ const IMAGE_SIZES = [
   { value: '3:4', label: '3:4 竖版', size: '864×1184' },
 ];
 
-function ImageGeneratorNew({ onClose, isAuthenticated, onShowLogin }: ImageGeneratorProps) {
-  const [prompt, setPrompt] = useState('');
-  const [selectedModel, setSelectedModel] = useState(IMAGE_MODELS[0].id);
+const BAILIAN_STYLES = [
+  { value: '<auto>', label: '自动' },
+  { value: '<photography>', label: '摄影' },
+  { value: '<portrait>', label: '人像写真' },
+  { value: '<3d cartoon>', label: '3D卡通' },
+  { value: '<anime>', label: '动画' },
+  { value: '<oil painting>', label: '油画' },
+  { value: '<watercolor>', label: '水彩' },
+  { value: '<sketch>', label: '素描' },
+  { value: '<chinese painting>', label: '中国画' },
+  { value: '<flat illustration>', label: '扁平插画' },
+];
+
+const BAILIAN_SIZES = [
+  { value: '1280*1280', label: '1:1 正方形' },
+  { value: '1104*1472', label: '3:4 竖版' },
+  { value: '1472*1104', label: '4:3 横版' },
+  { value: '960*1696', label: '9:16 竖屏' },
+  { value: '1696*960', label: '16:9 横屏' },
+  { value: '768*2700', label: '极限竖屏' },
+  { value: '1024*1024', label: '1024×1024' },
+  { value: '720*1280', label: '720×1280' },
+  { value: '1280*720', label: '1280×720' },
+  { value: '768*1152', label: '768×1152' },
+  { value: '512*512', label: '512×512' },
+  { value: '768*768', label: '768×768' },
+  { value: '1280*1280', label: '1280×1280' },
+  { value: '1536*1536', label: '1536×1536' },
+  { value: '1440*1440', label: '1440×1440' },
+];
+
+function ImageGeneratorNew({ onClose, isAuthenticated, onShowLogin, initialPrompt = '', initialModel = '', initialImage = '', onInitialDataUsed }: ImageGeneratorProps) {
+  const [prompt, setPrompt] = useState(initialPrompt);
+  const [selectedModel, setSelectedModel] = useState(initialModel || IMAGE_MODELS[0].id);
   const [selectedSize, setSelectedSize] = useState(IMAGE_SIZES[0].value);
+  const [selectedStyle, setSelectedStyle] = useState(BAILIAN_STYLES[0].value);
+  const [selectedBailianSize, setSelectedBailianSize] = useState(BAILIAN_SIZES[0].value);
+  const [negativePrompt, setNegativePrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [quota, setQuota] = useState<{ total: number; used: number; remaining: number } | null>(null);
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(initialImage || null);
   const [history, setHistory] = useState<string[]>([]);
+  const [promptInfo, setPromptInfo] = useState<{ original: string; extended: boolean } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // 使用初始数据后清除
+  useEffect(() => {
+    if ((initialPrompt || initialImage) && onInitialDataUsed) {
+      onInitialDataUsed();
+    }
+  }, []);
+
+  // 如果有初始图片，自动选择支持编辑的模型
+  useEffect(() => {
+    if (initialImage && uploadedImage === initialImage) {
+      const editableModels = IMAGE_MODELS.filter(m => m.supportsImageEdit);
+      if (editableModels.length > 0 && !initialModel) {
+        setSelectedModel(editableModels[0].id);
+      }
+    }
+  }, [initialImage]);
 
   const loadQuota = async () => {
     try {
@@ -54,16 +130,18 @@ function ImageGeneratorNew({ onClose, isAuthenticated, onShowLogin }: ImageGener
   useEffect(() => {
     loadQuota();
     // 加载历史记录
-    const saved = localStorage.getItem('image_history');
-    if (saved) {
-      setHistory(JSON.parse(saved));
-    }
+    StorageService.getImageHistory(10).then(setHistory);
   }, []);
 
-  const saveToHistory = (url: string) => {
-    const newHistory = [url, ...history].slice(0, 10); // 只保留最近10张
-    setHistory(newHistory);
-    localStorage.setItem('image_history', JSON.stringify(newHistory));
+  const saveToHistory = async (url: string) => {
+    try {
+      await StorageService.saveImageToHistory(url);
+      // 重新加载历史记录
+      const updated = await StorageService.getImageHistory(10);
+      setHistory(updated);
+    } catch (err) {
+      console.error('Failed to save to history:', err);
+    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,6 +163,12 @@ function ImageGeneratorNew({ onClose, isAuthenticated, onShowLogin }: ImageGener
       const base64 = event.target?.result as string;
       setUploadedImage(base64);
       setError(null);
+      
+      // 自动选择支持图片编辑的模型
+      const editableModels = IMAGE_MODELS.filter(m => m.supportsImageEdit);
+      if (editableModels.length > 0) {
+        setSelectedModel(editableModels[0].id);
+      }
     };
     reader.onerror = () => {
       setError('图片读取失败');
@@ -122,34 +206,196 @@ function ImageGeneratorNew({ onClose, isAuthenticated, onShowLogin }: ImageGener
         headers['Authorization'] = `Bearer ${token}`;
       }
       
-      const requestBody: any = { 
-        prompt: prompt.trim(), 
-        model: selectedModel,
-        aspect_ratio: selectedSize
-      };
+      const currentModel = IMAGE_MODELS.find(m => m.id === selectedModel);
+      const isBalian = currentModel?.provider === 'bailian';
       
-      if (uploadedImage) {
-        requestBody.base_image = uploadedImage;
-      }
-
-      const response = await fetch(`${API_BASE_URL}/image/generate`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(requestBody)
-      });
-
-      const data = await response.json();
-      if (data.success && data.image_url) {
-        setImageUrl(data.image_url);
-        saveToHistory(data.image_url);
-        loadQuota();
+      let response;
+      
+      if (isBalian) {
+        // 调用阿里百练 API
+        const requestBody: any = {
+          prompt: prompt.trim(),
+          model: selectedModel.replace('alibaba/', '')
+        };
+        
+        if (negativePrompt.trim()) {
+          requestBody.negative_prompt = negativePrompt.trim();
+        }
+        
+        // 如果有上传的图片，添加参考图
+        if (uploadedImage) {
+          requestBody.ref_image = uploadedImage;
+          // 调试：打印参考图片信息
+          console.log('📸 参考图片信息:');
+          console.log('  大小:', uploadedImage.length, '字符');
+          console.log('  前缀:', uploadedImage.substring(0, 50));
+          console.log('  是否为 data URL:', uploadedImage.startsWith('data:'));
+          // 注意：wan2.6-t2i 模型不需要 ref_mode 和 ref_strength 参数
+          // API 会根据提示词自动进行图像编辑
+        }
+        
+        // 根据模型类型添加参数
+        if (selectedModel === 'alibaba/wanx-v1') {
+          requestBody.style = selectedStyle;
+          requestBody.size = selectedBailianSize;
+        } else if (selectedModel.includes('wan2')) {
+          // 万相 2.x 系列
+          requestBody.size = selectedBailianSize;
+          requestBody.prompt_extend = true;
+          requestBody.watermark = false;
+        } else {
+          // Stable Diffusion 模型
+          requestBody.size = selectedBailianSize;
+        }
+        
+        response = await fetch(`${API_BASE_URL}/image/generate/bailian`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(requestBody)
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+          if (data.status === 'completed' && data.images && data.images.length > 0) {
+            // 同步响应 - 直接返回图片
+            setImageUrl(data.images[0]);
+            setPromptInfo({
+              original: data.original_prompt || prompt,
+              extended: data.prompt_extended || false
+            });
+            await saveToHistory(data.images[0]);
+            
+            // 保存到图片库（同步响应）
+            try {
+              await fetch(`${API_BASE_URL}/image/save`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                  model: selectedModel.replace('alibaba/', ''),
+                  prompt: prompt,
+                  imageUrl: data.images[0],
+                  size: selectedBailianSize,
+                  negativePrompt: negativePrompt || null
+                })
+              });
+            } catch (err) {
+              console.error('Failed to save to gallery:', err);
+            }
+            
+            loadQuota();
+          } else if (data.task_id) {
+            // 异步响应 - 开始轮询
+            setImageUrl(null);
+            pollTaskResult(data.task_id, headers);
+          } else {
+            setError('生成失败: 无效的响应格式');
+          }
+        } else {
+          setError(data.error || '任务创建失败');
+        }
       } else {
-        setError(data.error || '图片生成失败');
+        // 调用 OpenRouter API
+        const requestBody: any = { 
+          prompt: prompt.trim(), 
+          model: selectedModel,
+          aspect_ratio: selectedSize
+        };
+        
+        if (uploadedImage) {
+          requestBody.base_image = uploadedImage;
+        }
+
+        response = await fetch(`${API_BASE_URL}/image/generate`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(requestBody)
+        });
+
+        const data = await response.json();
+        if (data.success && data.image_url) {
+          setImageUrl(data.image_url);
+          await saveToHistory(data.image_url);
+          
+          // 保存到图片库（OpenRouter）
+          try {
+            await fetch(`${API_BASE_URL}/image/save`, {
+              method: 'POST',
+              headers,
+              body: JSON.stringify({
+                model: selectedModel,
+                prompt: prompt,
+                imageUrl: data.image_url,
+                size: selectedSize,
+                negativePrompt: negativePrompt || null
+              })
+            });
+          } catch (err) {
+            console.error('Failed to save to gallery:', err);
+          }
+          
+          loadQuota();
+        } else {
+          setError(data.error || '图片生成失败');
+        }
       }
     } catch (err: any) {
       setError('网络错误: ' + err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const pollTaskResult = async (taskId: string, headers: Record<string, string>, attempts = 0) => {
+    if (attempts > 60) { // 最多轮询60次（约5分钟）
+      setError('任务超时，请稍后重试');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/image/bailian/task/${taskId}`, { headers });
+      const data = await response.json();
+
+      if (data.success) {
+        if (data.status === 'completed' && data.images && data.images.length > 0) {
+          setImageUrl(data.images[0]);
+          await saveToHistory(data.images[0]);
+          
+          // 保存到图片库（异步任务完成后）
+          try {
+            const currentModel = IMAGE_MODELS.find(m => m.id === selectedModel);
+            const isBalian = currentModel?.provider === 'bailian';
+            
+            if (isBalian) {
+              // 调用后端 API 保存到图片库
+              await fetch(`${API_BASE_URL}/image/save`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                  model: selectedModel.replace('alibaba/', ''),
+                  prompt: prompt,
+                  imageUrl: data.images[0],
+                  size: selectedBailianSize,
+                  negativePrompt: negativePrompt || null
+                })
+              });
+            }
+          } catch (err) {
+            console.error('Failed to save to gallery:', err);
+            // 不影响主流程
+          }
+          
+          loadQuota();
+        } else if (data.status === 'processing') {
+          // 继续轮询
+          setTimeout(() => pollTaskResult(taskId, headers, attempts + 1), 5000);
+        } else if (data.status === 'failed') {
+          setError(data.message || '图片生成失败');
+        }
+      } else {
+        setError(data.error || '查询失败');
+      }
+    } catch (err: any) {
+      setError('查询失败: ' + err.message);
     }
   };
 
@@ -198,57 +444,12 @@ function ImageGeneratorNew({ onClose, isAuthenticated, onShowLogin }: ImageGener
             </div>
           )}
 
-          {/* 提示词输入 */}
+          {/* 图片上传区域 - 放在最前面 */}
           <div className="form-group">
-            <label>
-              {uploadedImage ? '📝 描述修改内容' : '💭 描述你的创意'}
-            </label>
-            <textarea 
-              value={prompt} 
-              onChange={(e) => setPrompt(e.target.value)} 
-              placeholder={uploadedImage ? "例如：将背景改为日落海滩..." : "例如：一只可爱的橘猫在阳光下打盹..."} 
-              disabled={loading}
-              rows={4}
-            />
-          </div>
-
-          {/* 模型选择 */}
-          <div className="form-group">
-            <label>🤖 选择模型</label>
-            <div className="model-grid">
-              {IMAGE_MODELS.map(model => (
-                <div
-                  key={model.id}
-                  className={`model-card ${selectedModel === model.id ? 'selected' : ''}`}
-                  onClick={() => !loading && setSelectedModel(model.id)}
-                >
-                  <div className="model-name">{model.name}</div>
-                  <div className="model-desc">{model.desc}</div>
-                  {model.badge && <span className="model-badge">{model.badge}</span>}
-                </div>
-              ))}
+            <label>🖼️ 上传图片（可选）</label>
+            <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>
+              💡 支持的模型：千问 2.0 系列、万相系列
             </div>
-          </div>
-
-          {/* 尺寸选择 */}
-          <div className="form-group">
-            <label>📐 图片尺寸</label>
-            <select 
-              value={selectedSize} 
-              onChange={(e) => setSelectedSize(e.target.value)} 
-              disabled={loading}
-            >
-              {IMAGE_SIZES.map(size => (
-                <option key={size.value} value={size.value}>
-                  {size.label} ({size.size})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* 图片上传 */}
-          <div className="form-group">
-            <label>🖼️ 上传参考图（可选）</label>
             <input
               ref={fileInputRef}
               type="file"
@@ -262,22 +463,205 @@ function ImageGeneratorNew({ onClose, isAuthenticated, onShowLogin }: ImageGener
                 className="upload-btn"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={loading}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: '2px dashed #1a73e8',
+                  borderRadius: '8px',
+                  background: '#f0f7ff',
+                  color: '#1a73e8',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  transition: 'all 0.2s'
+                }}
               >
-                📤 点击上传图片
+                📤 点击上传图片或拖拽到此处
               </button>
             ) : (
-              <div className="uploaded-preview">
-                <img src={uploadedImage} alt="Uploaded" />
+              <div style={{
+                position: 'relative',
+                borderRadius: '8px',
+                overflow: 'hidden',
+                background: '#f0f7ff',
+                padding: '8px'
+              }}>
+                <img 
+                  src={uploadedImage} 
+                  alt="Uploaded" 
+                  style={{
+                    width: '100%',
+                    maxHeight: '200px',
+                    objectFit: 'cover',
+                    borderRadius: '4px'
+                  }}
+                />
                 <button
                   className="remove-btn"
                   onClick={removeUploadedImage}
                   disabled={loading}
+                  style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    background: '#ea4335',
+                    color: 'white',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '18px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
                 >
                   ✕
                 </button>
               </div>
             )}
           </div>
+
+          {/* 提示词输入 */}
+          <div className="form-group">
+            <label>
+              {uploadedImage ? '✏️ 描述你想要的修改或风格' : '💭 描述你的创意'}
+            </label>
+            <textarea 
+              value={prompt} 
+              onChange={(e) => setPrompt(e.target.value)} 
+              placeholder={uploadedImage 
+                ? "例如：改成油画风格、加上光晕效果、改变背景色..." 
+                : "例如：一只可爱的橘猫在阳光下打盹..."} 
+              disabled={loading}
+              rows={4}
+            />
+            {uploadedImage && (
+              <div style={{ fontSize: '12px', color: '#059669', marginTop: '8px', lineHeight: '1.5' }}>
+                ✅ 提示：详细描述你想要的修改效果。例如：改变风格、调整背景、改变光线、改变主体等。
+              </div>
+            )}
+          </div>
+
+          {/* 模型选择 */}
+          <div className="form-group">
+            <label>🤖 选择模型</label>
+            {uploadedImage && (
+              <div style={{ fontSize: '12px', color: '#059669', marginBottom: '8px', padding: '8px', background: '#f0fdf4', borderRadius: '6px' }}>
+                ✅ 已自动筛选支持图片编辑的模型
+              </div>
+            )}
+            <div className="model-grid">
+              {IMAGE_MODELS.map(model => {
+                // 如果上传了图片，只显示支持编辑的模型
+                if (uploadedImage && !model.supportsImageEdit) {
+                  return null;
+                }
+                
+                // 如果没有上传图片，显示所有模型
+                // 如果上传了图片，只显示支持编辑的模型（上面已过滤）
+                
+                return (
+                  <div
+                    key={model.id}
+                    className={`model-card ${selectedModel === model.id ? 'selected' : ''}`}
+                    onClick={() => !loading && setSelectedModel(model.id)}
+                  >
+                    <div className="model-name">{model.name}</div>
+                    <div className="model-desc">{model.desc}</div>
+                    {model.badge && <span className="model-badge">{model.badge}</span>}
+                    {uploadedImage && model.supportsImageEdit && (
+                      <span style={{
+                        position: 'absolute',
+                        bottom: '8px',
+                        right: '8px',
+                        fontSize: '10px',
+                        background: '#059669',
+                        color: 'white',
+                        padding: '2px 6px',
+                        borderRadius: '3px'
+                      }}>
+                        支持编辑
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 阿里百练特定选项 */}
+          {IMAGE_MODELS.find(m => m.id === selectedModel)?.provider === 'bailian' && (
+            <>
+              {/* 仅 wanx-v1 显示风格选择 */}
+              {selectedModel === 'alibaba/wanx-v1' && (
+                <div className="form-group">
+                  <label>🎨 图片风格</label>
+                  <select 
+                    value={selectedStyle} 
+                    onChange={(e) => setSelectedStyle(e.target.value)} 
+                    disabled={loading}
+                  >
+                    {BAILIAN_STYLES.map(style => (
+                      <option key={style.value} value={style.value}>
+                        {style.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* 尺寸选择（阿里百练） */}
+              <div className="form-group">
+                <label>📐 图片尺寸</label>
+                <select 
+                  value={selectedBailianSize} 
+                  onChange={(e) => setSelectedBailianSize(e.target.value)} 
+                  disabled={loading}
+                >
+                  {BAILIAN_SIZES.map(size => (
+                    <option key={size.value} value={size.value}>
+                      {size.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 反向提示词 */}
+              <div className="form-group">
+                <label>🚫 反向提示词（可选）</label>
+                <textarea 
+                  value={negativePrompt} 
+                  onChange={(e) => setNegativePrompt(e.target.value)} 
+                  placeholder="例如：模糊、低质量、变形..." 
+                  disabled={loading}
+                  rows={2}
+                />
+              </div>
+            </>
+          )}
+
+          {/* OpenRouter 特定选项 */}
+          {IMAGE_MODELS.find(m => m.id === selectedModel)?.provider === 'openrouter' && (
+            <>
+              {/* 尺寸选择 */}
+              <div className="form-group">
+                <label>📐 图片尺寸</label>
+                <select 
+                  value={selectedSize} 
+                  onChange={(e) => setSelectedSize(e.target.value)} 
+                  disabled={loading}
+                >
+                  {IMAGE_SIZES.map(size => (
+                    <option key={size.value} value={size.value}>
+                      {size.label} ({size.size})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
+          )}
 
           {/* 错误提示 */}
           {error && (
@@ -292,7 +676,11 @@ function ImageGeneratorNew({ onClose, isAuthenticated, onShowLogin }: ImageGener
             onClick={generateImage} 
             disabled={loading || !prompt.trim()}
           >
-            {loading ? '⏳ 生成中...' : uploadedImage ? '✏️ 开始编辑' : '🎨 生成图片'}
+            {loading 
+              ? '⏳ 生成中...' 
+              : uploadedImage 
+                ? '✏️ 开始编辑' 
+                : '🎨 生成图片'}
           </button>
         </div>
 
@@ -333,14 +721,31 @@ function ImageGeneratorNew({ onClose, isAuthenticated, onShowLogin }: ImageGener
 
           {/* 操作按钮 */}
           {imageUrl && !loading && (
-            <div className="action-bar">
-              <button className="action-btn primary" onClick={downloadImage}>
-                📥 下载图片
-              </button>
-              <button className="action-btn" onClick={() => { setImageUrl(null); setError(null); }}>
-                🔄 重新生成
-              </button>
-            </div>
+            <>
+              {promptInfo && promptInfo.extended && (
+                <div style={{
+                  padding: '12px 24px',
+                  background: '#f0fdf4',
+                  borderTop: '1px solid #e5e7eb',
+                  fontSize: '12px',
+                  color: '#059669',
+                  lineHeight: '1.5'
+                }}>
+                  <div style={{ fontWeight: '600', marginBottom: '4px' }}>✨ 提示词已优化</div>
+                  <div style={{ fontSize: '11px', color: '#047857' }}>
+                    系统自动优化了你的提示词以获得更好的生成效果
+                  </div>
+                </div>
+              )}
+              <div className="action-bar">
+                <button className="action-btn primary" onClick={downloadImage}>
+                  📥 下载图片
+                </button>
+                <button className="action-btn" onClick={() => { setImageUrl(null); setError(null); setPromptInfo(null); }}>
+                  🔄 重新生成
+                </button>
+              </div>
+            </>
           )}
 
           {/* 历史记录 */}
@@ -519,7 +924,7 @@ function ImageGeneratorNew({ onClose, isAuthenticated, onShowLogin }: ImageGener
 
         .model-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: repeat(2, 1fr);
           gap: 10px;
         }
 
